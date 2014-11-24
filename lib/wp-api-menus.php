@@ -110,7 +110,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				
 				$json_menu['items'] = $json_menu_items;
 				$json_menu['meta']['links']['collection'] = $json_url;
-				$json_menu['meta']['links']['self'] = $json_url . 'menu/' . $id;
+				$json_menu['meta']['links']['self'] = $json_url . $id;
 
 			endif;
 
