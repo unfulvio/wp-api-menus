@@ -69,11 +69,10 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menus[$i]['name']         = $menu['name'];
 				$json_menus[$i]['slug']         = $menu['slug'];
 				$json_menus[$i]['description']  = $menu['description'];
-				$json_menus[$i]['parent']       = $menu['parent'];
 				$json_menus[$i]['count']        = $menu['count'];
 
-				$json_menus[$i]['meta']['collection'] = $json_url;
-				$json_menus[$i]['meta']['self'] = $json_url . $menu['term_id'];
+				$json_menus[$i]['meta']['links']['collection'] = $json_url;
+				$json_menus[$i]['meta']['links']['self'] = $json_url . $menu['term_id'];
 
 				$i ++;
 			endforeach;
@@ -103,18 +102,15 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menu['name']          = $menu['name'];
 				$json_menu['slug']          = $menu['slug'];
 				$json_menu['description']   = $menu['description'];
-				$json_menu['parent']        = abs( $menu['parent'] );
 				$json_menu['count']         = abs( $menu['count'] );
 
-				$i = 0;
 				$json_menu_items = array();
 				foreach( $wp_menu_items as $item_object )
 					$json_menu_items[] = $this->format_menu_item( $item_object );
 				
 				$json_menu['items'] = $json_menu_items;
-				$json_menu['meta']['collection'] = $json_url;
-				$json_menu['meta']['parent'] = ! empty( $json_menu_items[$i]['parent'] ) ? $json_menu_items[$i]['parent'] : '';
-				$json_menu['meta']['self'] = $json_url . 'menu/' . $id;
+				$json_menu['meta']['links']['collection'] = $json_url;
+				$json_menu['meta']['links']['self'] = $json_url . 'menu/' . $id;
 
 			endif;
 
@@ -142,8 +138,8 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 					$json_menus[$slug]['ID'] = $locations[$slug];
 					$json_menus[$slug]['label'] = $label;
-					$json_menus[$slug]['meta']['collection'] = $json_url;
-					$json_menus[$slug]['meta']['self'] = $json_url . $slug;
+					$json_menus[$slug]['meta']['links']['collection'] = $json_url;
+					$json_menus[$slug]['meta']['links']['self'] = $json_url . $slug;
 
 				endforeach;
 
@@ -189,6 +185,8 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					$menu[$i] = $this->format_menu_item( $top_item, false );
 					if ( isset( $menu_items_with_children[$top_item->ID] ) )
 						$menu[$i]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items );
+					else
+						$menu[$i]['children'] = array();
 
 					$i++;
 				endforeach;
@@ -268,8 +266,6 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 			if ( $children === true && ! empty( $menu ) )
 				$menu_item['children'] = $this->get_nav_menu_item_children( $item['ID'], $menu );
-			else
-				$menu_item['children'] = array();
 
 			return $menu_item;
 		}
