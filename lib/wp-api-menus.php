@@ -10,6 +10,12 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 	 */
 	class WP_JSON_Menus {
 
+		public function __construct() {
+
+			// nothin here for now
+
+		}
+
 		/**
 		 * Register menu routes for WP API
 		 *
@@ -33,7 +39,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				array( array( $this, 'get_menu_locations' ), WP_JSON_Server::READABLE ),
 			);
 			// menu for given location 
-			$routes['/menu-locations/(?P<location>\w+)'] = array(
+			$routes['/menu-locations/(?<location>\w+)'] = array(
 				array( array( $this, 'get_menu_location' ), WP_JSON_Server::READABLE ),
 			);
 
@@ -57,6 +63,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			foreach ( $wp_menus as $wp_menu ) :
 
 				$menu = (array) $wp_menu;
+
 				$json_menus[$i]                 = $menu;
 				$json_menus[$i]['ID']           = $menu['term_id'];
 				$json_menus[$i]['name']         = $menu['name'];
@@ -64,9 +71,11 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menus[$i]['description']  = $menu['description'];
 				$json_menus[$i]['parent']       = $menu['parent'];
 				$json_menus[$i]['count']        = $menu['count'];
-				$json_menus[$i]['meta']['self'] = $json_url . $menu['term_id'];
-				$i ++;
 
+				$json_menus[$i]['meta']['collection'] = $json_url;
+				$json_menus[$i]['meta']['self'] = $json_url . $menu['term_id'];
+
+				$i ++;
 			endforeach;
 
 			return $json_menus;
@@ -80,7 +89,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 * @param  int   $id ID of the menu
 		 * @return array Menu data
 		 */
-		public static function get_menu( $id ) {
+		public function get_menu( $id ) {
 
 			$json_url = get_json_url() . '/menus/';
 			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
@@ -90,36 +99,21 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			if ( $wp_menu_object ) :
 
 				$menu = (array) $wp_menu_object;
-				$json_menu['ID']            = $menu['term_id'];
+				$json_menu['ID']            = abs( $menu['term_id'] );
 				$json_menu['name']          = $menu['name'];
 				$json_menu['slug']          = $menu['slug'];
 				$json_menu['description']   = $menu['description'];
-				$json_menu['parent']        = $menu['parent'];
-				$json_menu['count']         = $menu['count'];
+				$json_menu['parent']        = abs( $menu['parent'] );
+				$json_menu['count']         = abs( $menu['count'] );
 
 				$i = 0;
 				$json_menu_items = array();
-				foreach( $wp_menu_items as $item_object ) :
-
-					$item = (array) $item_object;
-					$json_menu_items[$i]['ID'] = $item['ID'];
-					$json_menu_items[$i]['order'] = $item['menu_order'];
-					$json_menu_items[$i]['parent'] = $item['menu_item_parent'];
-					$json_menu_items[$i]['title'] = $item['title'];
-					$json_menu_items[$i]['url'] = $item['url'];
-					$json_menu_items[$i]['attr'] = $item['attr_title'];
-					$json_menu_items[$i]['target'] = $item['target'];
-					$json_menu_items[$i]['classes'] = $item['classes'];
-					$json_menu_items[$i]['xfn'] = $item['xfn'];
-					$json_menu_items[$i]['object_id'] = $item['object_id'];
-					$json_menu_items[$i]['object'] = $item['object'];
-					$json_menu_items[$i]['type'] = $item['type'];
-					$json_menu_items[$i]['type_label'] = $item['type_label'];
-					$i++;
+				foreach( $wp_menu_items as $item_object )
+					$json_menu_items[] = $this->format_menu_item( $item_object );
 				
-				endforeach;
 				$json_menu['items'] = $json_menu_items;
-				$json_menu['meta']['parent'] = $json_url;
+				$json_menu['meta']['collection'] = $json_url;
+				$json_menu['meta']['parent'] = ! empty( $json_menu_items[$i]['parent'] ) ? $json_menu_items[$i]['parent'] : '';
 				$json_menu['meta']['self'] = $json_url . 'menu/' . $id;
 
 			endif;
@@ -136,7 +130,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 */
 		public static function get_menu_locations() {
 
-			$json_url = get_json_url() . '/menus/';
+			$json_url = get_json_url() . '/menu-locations/';
 
 			$locations = get_nav_menu_locations();
 			$registered_menus = get_registered_nav_menus();
@@ -148,7 +142,8 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 					$json_menus[$slug]['ID'] = $locations[$slug];
 					$json_menus[$slug]['label'] = $label;
-					$json_menus[$slug]['meta']['self'] = $json_url . $locations[$slug];
+					$json_menus[$slug]['meta']['collection'] = $json_url;
+					$json_menus[$slug]['meta']['self'] = $json_url . $slug;
 
 				endforeach;
 
@@ -162,15 +157,121 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param  string $location The location name
+		 * @param  string $location The theme location menu name
 		 * @return array The menu for the corresponding location
 		 */
 		public function get_menu_location( $location ) {
 
 			$locations = get_nav_menu_locations();
-			$json_menu = isset( $locations[$location] ) ? $this->get_menu( $locations[$location] ) : '';
-			
-			return $json_menu;
+			if ( ! isset( $locations[$location] ) )
+				return array();
+
+			$wp_menu = wp_get_nav_menu_object( $locations[$location] );
+			$menu_items = wp_get_nav_menu_items( $wp_menu->term_id );
+
+			$sorted_menu_items = $top_level_menu_items = $menu_items_with_children = array();
+
+			foreach ( (array) $menu_items as $menu_item )
+				$sorted_menu_items[$menu_item->menu_order] = $menu_item;
+
+			foreach( $sorted_menu_items as $menu_item )
+				if ( $menu_item->menu_item_parent != 0 )
+					$menu_items_with_children[$menu_item->menu_item_parent] = true;
+				else
+					$top_level_menu_items[] = $menu_item;
+
+			$menu = array();
+			while( $sorted_menu_items ) :
+
+				$i = 0;
+				foreach( $top_level_menu_items as $top_item ) :
+
+					$menu[$i] = $this->format_menu_item( $top_item, false );
+					if ( isset( $menu_items_with_children[$top_item->ID] ) )
+						$menu[$i]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items );
+
+					$i++;
+				endforeach;
+
+				break;
+
+			endwhile;
+
+			return $menu;
+		}
+
+		/**
+		 * Returns all child nav_menu_items under a specific parent.
+		 *
+		 * @since   1.1.0
+		 *
+		 * @param   int     $parent_id      the parent nav_menu_item ID
+		 * @param   array   $nav_menu_items navigation menu items
+		 * @param   bool    $depth          gives all children or direct children only
+		 *
+		 * @return  array   returns filtered array of nav_menu_items
+		 */
+		private function get_nav_menu_item_children( $parent_id, $nav_menu_items, $depth = true ) {
+
+			$nav_menu_item_list = array();
+
+			foreach ( (array) $nav_menu_items as $nav_menu_item ) :
+
+				if ( $nav_menu_item->menu_item_parent == $parent_id ) :
+
+					$nav_menu_item_list[] = $this->format_menu_item( $nav_menu_item, true, $nav_menu_items );
+
+					if ( $depth ) {
+
+						if ( $children = $this->get_nav_menu_item_children( $nav_menu_item->ID, $nav_menu_items ) )
+							$nav_menu_item_list = array_merge( $nav_menu_item_list, $children );
+
+					}
+
+				endif;
+
+			endforeach;
+
+			return $nav_menu_item_list;
+		}
+
+		/**
+		 * Format a menu item for JSON API consumption.
+		 *
+		 * @since   1.1.0
+		 *
+		 * @param   object|array    $menu_item  the menu item
+		 * @param   bool            $children   get menu item children (default false)
+		 * @param   array           $menu       the menu the item belongs to (used when $children is set to true)
+		 *
+		 * @return  array   a formatted menu item for JSON
+		 */
+		private function format_menu_item( $menu_item, $children = false, $menu = array() ) {
+
+			$item = (array) $menu_item;
+			$menu_item = array( 
+				'ID'       => abs( $item['ID'] ),
+				'order'    => (int) $item['menu_order'],
+				'parent'   => abs( $item['menu_item_parent'] ),
+				'title'    => $item['title'],
+				'url'      => $item['url'],
+				'attr'     => $item['attr_title'],
+				'target'   => $item['target'],
+				'classes'  => implode( ' ', $item['classes'] ),
+				'xfn'      => $item['xfn'],
+				'description' => $item['description'],
+				'object_id' => abs( $item['object_id'] ),
+				'object'   => $item['object'],
+				'type'     => $item['type'],
+				'type_label' => $item['type_label'],
+			);
+
+			if ( $children === true && ! empty( $menu ) )
+				$menu_item['children'] = $this->get_nav_menu_item_children( $item['ID'], $menu );
+			else
+				$menu_item['children'] = array();
+
+			return $menu_item;
 		}
 
 	}
