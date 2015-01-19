@@ -2,7 +2,7 @@
 
 [WordPress](http://www.wordpress.org/) plugin that extends the JSON REST [WP API](https://github.com/WP-API/WP-API) with new routes pointing to WordPress registered menus. Read the [WP API documentation](http://wp-api.org/).
 
-[![Download from WordPress.org](https://github.com/nekojira/wp-api-menus/assets/wordpress-download-btn.png)](https://wordpress.org/plugins/wp-api-menus/)
+[![Download from WordPress.org](https://github.com/nekojira/wp-api-menus/blob/master/assets/wordpress-download-btn.png)](https://wordpress.org/plugins/wp-api-menus/)
 
 #### New routes available:
 
