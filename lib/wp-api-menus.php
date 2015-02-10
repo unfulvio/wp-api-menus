@@ -6,13 +6,12 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 	 * WP JSON Menus class
 	 *
 	 * @package WP API Menus
+	 *
 	 * @since 1.0.0
 	 */
 	class WP_JSON_Menus {
 
 		public function __construct() {
-
-			// nothin here for now
 
 		}
 
@@ -209,7 +208,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 *
 		 * @return  array   returns filtered array of nav_menu_items
 		 */
-		private function get_nav_menu_item_children( $parent_id, $nav_menu_items, $depth = true ) {
+		public function get_nav_menu_item_children( $parent_id, $nav_menu_items, $depth = true ) {
 
 			$nav_menu_item_list = array();
 
@@ -231,6 +230,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			endforeach;
 
 			return $nav_menu_item_list;
+
 		}
 
 		/**
@@ -244,7 +244,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 *
 		 * @return  array   a formatted menu item for JSON
 		 */
-		private function format_menu_item( $menu_item, $children = false, $menu = array() ) {
+		public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
 			$item = (array) $menu_item;
 			$menu_item = array( 

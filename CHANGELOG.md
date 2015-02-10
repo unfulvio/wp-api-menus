@@ -1,3 +1,6 @@
+# 1.1.2 (10 Feb 2015)
+* Introduced `json_menus_format_menu_item` filter hook - props @Noctine
+
 # 1.1.1 (15 Jan 2015)
 * Submission to WordPress.org plugins repository.
 

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=SUJDJhsq
 Tags: wp-api, json, menus, rest
 Requires at least: 3.6.0
 Tested up to: 4.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,8 @@ The new routes available will be:
 * `/menu-locations/<location>` data for menu in specified menu in theme location.
 
 Currently, the `menu-locations/<location>` route for individual menus will return a tree with full menu hierarchy, with correct menu item order and listing children for each menu item. The `menus/<id>` route will output menu details and a flat array of menu items. Item order or if each item has a parent will be indicated in each item attributes, but this route won't output items as a tree.
+
+You can alter the data arrangement of each individual menu items and children using the filter hook `json_menus_format_menu_item`.
 
 == Installation ==
 
@@ -49,6 +51,9 @@ However, menu data organization in json is a bit arbitrary, and that's why proba
 Nothing to show really, this plugin has no settings or frontend.
 
 == Changelog ==
+
+= 1.1.2 =
+* Introduced `json_menus_format_menu_item` filter hook - props @Noctine
 
 = 1.1.1 =
 * Submission to WordPress.org plugins repository.
