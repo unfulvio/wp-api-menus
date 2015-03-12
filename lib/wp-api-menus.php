@@ -183,7 +183,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 					$menu[$i] = $this->format_menu_item( $top_item, false );
 					if ( isset( $menu_items_with_children[$top_item->ID] ) )
-						$menu[$i]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items );
+						$menu[$i]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items, false );
 					else
 						$menu[$i]['children'] = array();
 
