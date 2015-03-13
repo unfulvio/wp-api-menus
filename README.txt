@@ -52,7 +52,7 @@ Nothing to show really, this plugin has no settings or frontend.
 
 == Changelog ==
 
-# 1.1.3 (13 Mar 2015)
+= 1.1.3 =
 * Fixes bug where duplicate items where created in nested menus - props @josh-taylor
 
 = 1.1.2 =
