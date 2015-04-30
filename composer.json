@@ -1,0 +1,19 @@
+{
+  "name": "nekojira/wp-api-menus",
+  "description": "Extends WordPress WP API with menu routes.",
+  "version": "1.1.4",
+  "keywords": [
+    "wordpress",
+    "wp",
+    "wp-api",
+    "api",
+    "json"
+  ],
+  "homepage": "https://github.com/nekojira/wp-api-menus",
+  "license": "GPLv2 or later",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=5.3.2",
+    "composer/installers": "v1.0.19"
+  }
+}
