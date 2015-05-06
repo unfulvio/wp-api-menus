@@ -247,7 +247,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
 			$item = (array) $menu_item;
-			$menu_item = array( 
+			$menu_item = array(
 				'ID'       => abs( $item['ID'] ),
 				'order'    => (int) $item['menu_order'],
 				'parent'   => abs( $item['menu_item_parent'] ),
