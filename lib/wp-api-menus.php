@@ -276,9 +276,10 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			if ( $children === true && ! empty( $menu ) )
 				$menu_item['children'] = $this->get_nav_menu_item_children( $item['ID'], $menu );
 
+
 			return apply_filters( 'json_menus_format_menu_item', $menu_item );
 		}
 
-	}
+	} 
 
 endif;
