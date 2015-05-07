@@ -183,6 +183,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					$top_item->acf = get_fields($top_item->object_id);
 					$post = get_post($top_item->object_id);
 					$top_item->content = $post->post_content;
+					$top_item->slug = $post->post_name;
 					$menu[$i] = $this->format_menu_item( $top_item, false );
 					if ( isset( $menu_items_with_children[$top_item->ID] ) )
 						$menu[$i]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items, false );
@@ -220,6 +221,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					$nav_menu_item->acf = get_fields($nav_menu_item->object_id);
 					$post = get_post($nav_menu_item->object_id);
 					$nav_menu_item->content = $post->post_content;
+					$nav_menu_item->slug = $post->post_name;
 					$nav_menu_item_list[] = $this->format_menu_item( $nav_menu_item, true, $nav_menu_items );
 
 					if ( $depth ) {
@@ -256,6 +258,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				'order'    => (int) $item['menu_order'],
 				'parent'   => abs( $item['menu_item_parent'] ),
 				'title'    => $item['title'],
+				'slug'    => $item['slug'],
 				'url'      => $item['url'],
 				'attr'     => $item['attr_title'],
 				'target'   => $item['target'],
