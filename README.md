@@ -1,6 +1,6 @@
 ## Menu routes for WordPress JSON REST API
 
-[![Join the chat at https://gitter.im/nekojira/wp-api-menus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nekojira/wp-api-menus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![GitHub version](https://badge.fury.io/gh/nekojira%2Fwp-api-menus.svg)](http://badge.fury.io/gh/nekojira%2Fwp-api-menus) [![Join the chat at https://gitter.im/nekojira/wp-api-menus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nekojira/wp-api-menus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [WordPress](http://www.wordpress.org/) plugin that extends the JSON REST [WP API](https://github.com/WP-API/WP-API) with new routes pointing to WordPress registered menus. Read the [WP API documentation](http://wp-api.org/).
 
