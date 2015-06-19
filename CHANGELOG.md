@@ -1,5 +1,6 @@
 #### 1.1.5 (19 jun 2015)
 * Minor edits to headers and phpdocs
+* Improved safety
 
 #### 1.1.4 (30 apr 2015)
 * Supports WordPress 4.2, add composer.json for wp-packagist
