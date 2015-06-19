@@ -1,7 +1,7 @@
 === WP API Menus ===
 Contributors: nekojira
-Donate link: https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=SUJDJhsqyxThi-AbCT2HmIpMmBar3yAXDTYxlcNqruUIneC0_cxfT29SdIq&dispatch=5885d80a13c0db1f8e263663d3faee8d5402c249c5a2cfd4a145d37ec05e9a5e
-Tags: wp-api, json, menus, rest
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P64V9NTEYFKDL
+Tags: wp-api, json-rest-api, json, menus, rest, api, menu-routes
 Requires at least: 3.6.0
 Tested up to: 4.2.2
 Stable tag: 1.1.5
