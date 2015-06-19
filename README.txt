@@ -3,8 +3,8 @@ Contributors: nekojira
 Donate link: https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=SUJDJhsqyxThi-AbCT2HmIpMmBar3yAXDTYxlcNqruUIneC0_cxfT29SdIq&dispatch=5885d80a13c0db1f8e263663d3faee8d5402c249c5a2cfd4a145d37ec05e9a5e
 Tags: wp-api, json, menus, rest
 Requires at least: 3.6.0
-Tested up to: 4.2.1
-Stable tag: 1.1.4
+Tested up to: 4.2.2
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

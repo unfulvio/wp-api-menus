@@ -1,11 +1,35 @@
 <?php
 /**
+ * @link              https://github.com/nekojira/wp-api-menus/
+ * @package           WP_API_Menus
+ * @author            Fulvio Notarstefano <fulvio.notarstefano@gmail.com>
+ *
+ * @wordpress-plugin
  * Plugin Name: JSON REST API Menu routes
- * Description: Extends WP API with WordPress menu routes
- * Author: nekojira<fulvio@nekojira.com>
+ * Description: Extends WP API with WordPress menu routes.
+ * Author: Fulvio Notarstefano
  * Author URI: https://github.com/nekojira
- * Version: 1.1.4
+ * Version: 1.1.5
  * Plugin URI: https://github.com/nekojira/wp-api-menus
+ */
+
+/**
+ * Copyright (c) 2015
+ * Fulvio Notarstefano (fulvio.notarstefano@gmail.com) and contributors.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2 or, at
+ * your discretion, any later version, as published by the Free
+ * Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // include main class
