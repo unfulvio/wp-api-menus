@@ -43,7 +43,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				array( array( $this, 'get_menu_locations' ), WP_JSON_Server::READABLE ),
 			);
 			// menu for given location
-			$routes['/menu-locations/(?<location>\w+)'] = array(
+			$routes['/menu-locations/(?P<location>[a-zA-Z0-9_-]+)'] = array(
 				array( array( $this, 'get_menu_location' ), WP_JSON_Server::READABLE ),
 			);
 
