@@ -19,7 +19,9 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 	 * @since 1.0.0
 	 */
 	class WP_REST_Menus {
-        private $api_namespace = 'wp/v2';
+        public static function api_namespace() {
+            return 'wp/v2';
+        }
 
 		/**
 		 * Register menu routes for WP API
@@ -112,7 +114,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		public function get_menu( $request ) {
 
             $id = (int) $request['id'];
-			$rest_url = get_rest_url() . $this->api_namespace . '/menus/';
+			$rest_url = get_rest_url() . self::api_namespace() . '/menus/';
 			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
 			$wp_menu_items = $id ? wp_get_nav_menu_items( $id ) : array();
 
@@ -148,7 +150,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		 */
 		public static function get_menu_locations() {
 
-			$rest_url = get_rest_url() . '/menu-locations/';
+			$rest_url = get_rest_url() . self::api_namespace() . '/menu-locations/';
 
 			$locations = get_nav_menu_locations();
 			$registered_menus = get_registered_nav_menus();
