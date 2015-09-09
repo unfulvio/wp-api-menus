@@ -112,7 +112,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		public function get_menu( $request ) {
 
             $id = (int) $request['id'];
-			$rest_url = get_rest_url() . '/menus/';
+			$rest_url = get_rest_url() . $this->api_namespace . '/menus/';
 			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
 			$wp_menu_items = $id ? wp_get_nav_menu_items( $id ) : array();
 
