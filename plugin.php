@@ -44,12 +44,7 @@ if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 	/**
 	 * Init REST API Menu routes
 	 */
-	function wp_rest_menus_init() {
-
-		$class = new WP_REST_Menus();
-		add_filter( 'rest_endpoints', array( $class, 'register_routes' ) );
-
-	}
-	add_action( 'rest_api_init', 'wp_rest_menus_init' );
+    $class = new WP_REST_Menus();
+	add_action('rest_api_init', array($class, 'register_routes'));
 
 endif;

@@ -19,6 +19,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 	 * @since 1.0.0
 	 */
 	class WP_REST_Menus {
+        private $api_namespace = 'wp/v2';
 
 		/**
 		 * Register menu routes for WP API
@@ -28,26 +29,42 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		 * @param  array $routes Existing routes
 		 * @return array Modified routes
 		 */
-		public function register_routes( $routes ) {
+		public function register_routes() {
 
-			// all registered menus
-			$routes['/menus'] = array(
-				array( array( $this, 'get_menus' ), WP_REST_Server::READABLE ),
-			);
-			// a specific menu
-			$routes['/menus/(?P<id>\d+)'] = array(
-				array( array( $this, 'get_menu' ), WP_REST_Server::READABLE ),
-			);
-			// all registered menu locations
-			$routes['/menu-locations'] = array(
-				array( array( $this, 'get_menu_locations' ), WP_REST_Server::READABLE ),
-			);
-			// menu for given location
-			$routes['/menu-locations/(?P<location>[a-zA-Z0-9_-]+)'] = array(
-				array( array( $this, 'get_menu_location' ), WP_REST_Server::READABLE ),
-			);
+            $base = 'menus';
 
-			return $routes;
+            register_rest_route('wp/v2', '/'.$base, array(
+                array(
+                    'methods'  => WP_REST_Server::READABLE,
+                    'callback' => array($this, 'get_menus')
+                )
+            ));
+
+            register_rest_route('wp/v2', '/'.$base.'/(?P<id>\d+)', array(
+                array(
+                    'methods'  => WP_REST_Server::READABLE,
+                    'callback' => array($this, 'get_menu'),
+                    'args'            => array(
+                        'context'          => array(
+                            'default'      => 'view',
+                        ),
+                    ),
+                )
+            ));
+
+            register_rest_route('wp/v2', '/'.$base.'/menu-locations', array(
+                array(
+                    'methods'  => WP_REST_Server::READABLE,
+                    'callback' => array($this, 'get_menu_locations')
+                )
+            ));
+
+            register_rest_route('wp/v2', '/'.$base.'/menu-locations/(?P<location>[a-zA-Z0-9_-]+)', array(
+                array(
+                    'methods'  => WP_REST_Server::READABLE,
+                    'callback' => array($this, 'get_menu_location')
+                )
+            ));
 		}
 
 		/**
@@ -92,9 +109,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		 * @param  int   $id ID of the menu
 		 * @return array Menu data
 		 */
-		public function get_menu( $id ) {
+		public function get_menu( $request ) {
 
-			$rest_url = get_json_url() . '/menus/';
+            $id = (int) $request['id'];
+			$rest_url = get_rest_url() . '/menus/';
 			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
 			$wp_menu_items = $id ? wp_get_nav_menu_items( $id ) : array();
 
@@ -130,7 +148,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		 */
 		public static function get_menu_locations() {
 
-			$rest_url = get_json_url() . '/menu-locations/';
+			$rest_url = get_rest_url() . '/menu-locations/';
 
 			$locations = get_nav_menu_locations();
 			$registered_menus = get_registered_nav_menus();
