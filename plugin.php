@@ -5,7 +5,7 @@
  * @author            Fulvio Notarstefano <fulvio.notarstefano@gmail.com>
  *
  * @wordpress-plugin
- * Plugin Name: JSON REST API Menu routes
+ * Plugin Name: WP REST API Menu routes
  * Description: Extends WP API with WordPress menu routes.
  * Author: Fulvio Notarstefano
  * Author URI: https://github.com/nekojira
@@ -39,17 +39,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // include main class
 include_once dirname( __FILE__ ) . '/lib/wp-api-menus.php';
 
-if ( ! function_exists ( 'wp_json_menus_init' ) ) :
+if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 
 	/**
-	 * Init JSON REST API Menu routes
+	 * Init REST API Menu routes
 	 */
-	function wp_json_menus_init() {
+	function wp_rest_menus_init() {
 
-		$class = new WP_JSON_Menus();
-		add_filter( 'json_endpoints', array( $class, 'register_routes' ) );
+		$class = new WP_REST_Menus();
+		add_filter( 'rest_endpoints', array( $class, 'register_routes' ) );
 
 	}
-	add_action( 'wp_json_server_before_serve', 'wp_json_menus_init' );
+	add_action( 'rest_api_init', 'wp_rest_menus_init' );
 
 endif;

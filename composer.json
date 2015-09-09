@@ -3,7 +3,7 @@
   "description": "Extends WordPress WP API with menu routes.",
   "type": "wordpress-plugin",
   "version": "1.1.5",
-  "keywords": ["wordpress", "wp", "wp-api", "wp-rest-api", "api", "json"],
+  "keywords": ["wordpress", "wp", "wp-api", "wp-rest-api", "api", "json", "rest"],
   "homepage": "https://github.com/nekojira/wp-api-menus",
   "license": "GPLv2.0+",
   "authors": [

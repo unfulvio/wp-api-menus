@@ -1,6 +1,6 @@
 <?php
 /**
- * WP JSON API Menu routes
+ * WP REST API Menu routes
  *
  * @package WP_API_Menus
  */
@@ -9,16 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'WP_JSON_Menus' ) ) :
+if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
 	/**
-	 * WP JSON Menus class
+	 * WP REST Menus class
 	 *
 	 * @package WP API Menus
 	 *
 	 * @since 1.0.0
 	 */
-	class WP_JSON_Menus {
+	class WP_REST_Menus {
 
 		/**
 		 * Register menu routes for WP API
@@ -32,19 +32,19 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 			// all registered menus
 			$routes['/menus'] = array(
-				array( array( $this, 'get_menus' ), WP_JSON_Server::READABLE ),
+				array( array( $this, 'get_menus' ), WP_REST_Server::READABLE ),
 			);
 			// a specific menu
 			$routes['/menus/(?P<id>\d+)'] = array(
-				array( array( $this, 'get_menu' ), WP_JSON_Server::READABLE ),
+				array( array( $this, 'get_menu' ), WP_REST_Server::READABLE ),
 			);
 			// all registered menu locations
 			$routes['/menu-locations'] = array(
-				array( array( $this, 'get_menu_locations' ), WP_JSON_Server::READABLE ),
+				array( array( $this, 'get_menu_locations' ), WP_REST_Server::READABLE ),
 			);
 			// menu for given location
 			$routes['/menu-locations/(?P<location>[a-zA-Z0-9_-]+)'] = array(
-				array( array( $this, 'get_menu_location' ), WP_JSON_Server::READABLE ),
+				array( array( $this, 'get_menu_location' ), WP_REST_Server::READABLE ),
 			);
 
 			return $routes;
@@ -59,29 +59,29 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 */
 		public static function get_menus() {
 
-			$json_url = get_json_url() . '/menus/';
+			$rest_url = get_rest_url() . '/menus/';
 			$wp_menus = wp_get_nav_menus();
 
 			$i = 0;
-			$json_menus = array();
+			$rest_menus = array();
 			foreach ( $wp_menus as $wp_menu ) :
 
 				$menu = (array) $wp_menu;
 
-				$json_menus[$i]                 = $menu;
-				$json_menus[$i]['ID']           = $menu['term_id'];
-				$json_menus[$i]['name']         = $menu['name'];
-				$json_menus[$i]['slug']         = $menu['slug'];
-				$json_menus[$i]['description']  = $menu['description'];
-				$json_menus[$i]['count']        = $menu['count'];
+				$rest_menus[$i]                 = $menu;
+				$rest_menus[$i]['ID']           = $menu['term_id'];
+				$rest_menus[$i]['name']         = $menu['name'];
+				$rest_menus[$i]['slug']         = $menu['slug'];
+				$rest_menus[$i]['description']  = $menu['description'];
+				$rest_menus[$i]['count']        = $menu['count'];
 
-				$json_menus[$i]['meta']['links']['collection'] = $json_url;
-				$json_menus[$i]['meta']['links']['self'] = $json_url . $menu['term_id'];
+				$rest_menus[$i]['meta']['links']['collection'] = $rest_url;
+				$rest_menus[$i]['meta']['links']['self'] = $rest_url . $menu['term_id'];
 
 				$i ++;
 			endforeach;
 
-			return $json_menus;
+			return $rest_menus;
 		}
 
 		/**
@@ -94,31 +94,31 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 */
 		public function get_menu( $id ) {
 
-			$json_url = get_json_url() . '/menus/';
+			$rest_url = get_json_url() . '/menus/';
 			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
 			$wp_menu_items = $id ? wp_get_nav_menu_items( $id ) : array();
 
-			$json_menu = array();
+			$rest_menu = array();
 			if ( $wp_menu_object ) :
 
 				$menu = (array) $wp_menu_object;
-				$json_menu['ID']            = abs( $menu['term_id'] );
-				$json_menu['name']          = $menu['name'];
-				$json_menu['slug']          = $menu['slug'];
-				$json_menu['description']   = $menu['description'];
-				$json_menu['count']         = abs( $menu['count'] );
+				$rest_menu['ID']            = abs( $menu['term_id'] );
+				$rest_menu['name']          = $menu['name'];
+				$rest_menu['slug']          = $menu['slug'];
+				$rest_menu['description']   = $menu['description'];
+				$rest_menu['count']         = abs( $menu['count'] );
 
-				$json_menu_items = array();
+				$rest_menu_items = array();
 				foreach( $wp_menu_items as $item_object )
-					$json_menu_items[] = $this->format_menu_item( $item_object );
+					$rest_menu_items[] = $this->format_menu_item( $item_object );
 
-				$json_menu['items'] = $json_menu_items;
-				$json_menu['meta']['links']['collection'] = $json_url;
-				$json_menu['meta']['links']['self'] = $json_url . $id;
+				$rest_menu['items'] = $rest_menu_items;
+				$rest_menu['meta']['links']['collection'] = $rest_url;
+				$rest_menu['meta']['links']['self'] = $rest_url . $id;
 
 			endif;
 
-			return $json_menu;
+			return $rest_menu;
 		}
 
 		/**
@@ -130,26 +130,26 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 */
 		public static function get_menu_locations() {
 
-			$json_url = get_json_url() . '/menu-locations/';
+			$rest_url = get_json_url() . '/menu-locations/';
 
 			$locations = get_nav_menu_locations();
 			$registered_menus = get_registered_nav_menus();
 
-			$json_menus = array();
+			$rest_menus = array();
 			if ( $locations && $registered_menus ) :
 
 				foreach( $registered_menus as $slug => $label ) :
 
-					$json_menus[$slug]['ID'] = $locations[$slug];
-					$json_menus[$slug]['label'] = $label;
-					$json_menus[$slug]['meta']['links']['collection'] = $json_url;
-					$json_menus[$slug]['meta']['links']['self'] = $json_url . $slug;
+					$rest_menus[$slug]['ID'] = $locations[$slug];
+					$rest_menus[$slug]['label'] = $label;
+					$rest_menus[$slug]['meta']['links']['collection'] = $rest_url;
+					$rest_menus[$slug]['meta']['links']['self'] = $rest_url . $slug;
 
 				endforeach;
 
 			endif;
 
-			return $json_menus;
+			return $rest_menus;
 		}
 
 		/**
@@ -239,7 +239,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		}
 
 		/**
-		 * Format a menu item for JSON API consumption.
+		 * Format a menu item for REST API consumption.
 		 *
 		 * @since   1.1.0
 		 *
@@ -247,7 +247,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 * @param   bool            $children   get menu item children (default false)
 		 * @param   array           $menu       the menu the item belongs to (used when $children is set to true)
 		 *
-		 * @return  array   a formatted menu item for JSON
+		 * @return  array   a formatted menu item for REST
 		 */
 		public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
@@ -272,7 +272,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			if ( $children === true && ! empty( $menu ) )
 				$menu_item['children'] = $this->get_nav_menu_item_children( $item['ID'], $menu );
 
-			return apply_filters( 'json_menus_format_menu_item', $menu_item );
+			return apply_filters( 'rest_menus_format_menu_item', $menu_item );
 		}
 
 	}
