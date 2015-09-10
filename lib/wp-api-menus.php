@@ -230,7 +230,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		 * @param  string $location The theme location menu name
 		 * @return array The menu for the corresponding location
 		 */
-		public function get_menu_location( $location ) {
+		public function get_menu_location( $request ) {
+            $location = $request['location'];
 
 			$locations = get_nav_menu_locations();
 			if ( ! isset( $locations[$location] ) )
