@@ -143,10 +143,20 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 			return $rest_menu;
 		}
 
+        /**
+         *
+         * Given a flat array of menu items, split them into parent/child items and
+         * recurse over them to return children nexted in their parent
+         *
+         * @param $menu_items
+         * @param null $parent
+         * @return array
+         */
         private function nested_menu_items( &$menu_items, $parent = null ) {
             $parents = array();
             $children = array();
 
+            // separate menu_items into parents & children
             array_map(function($i) use ( $parent, &$children, &$parents ){
                 if($i['ID'] != $parent && $i['parent'] == $parent) {
                     $parents[] = $i;
@@ -164,6 +174,13 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return $parents;
         }
 
+        /**
+         * Does a collection of menu items contain an item that is the parent id of 'id'
+         *
+         * @param $items
+         * @param $id
+         * @return array
+         */
         private function has_children ( $items, $id ){
             return array_filter($items, function( $i ) use ( $id ) {
                 return $i['parent'] == $id;
