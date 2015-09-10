@@ -148,6 +148,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * Given a flat array of menu items, split them into parent/child items and
          * recurse over them to return children nexted in their parent
          *
+         * @since 1.1.6
+         *
          * @param $menu_items
          * @param null $parent
          * @return array
@@ -176,6 +178,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
         /**
          * Does a collection of menu items contain an item that is the parent id of 'id'
+         *
+         * @since 1.1.6
          *
          * @param $items
          * @param $id
