@@ -132,6 +132,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 				foreach( $wp_menu_items as $item_object )
 					$rest_menu_items[] = $this->format_menu_item( $item_object );
 
+                $rest_menu_items = $this->nested_menu_items($rest_menu_items, 0);
+
 				$rest_menu['items'] = $rest_menu_items;
 				$rest_menu['meta']['links']['collection'] = $rest_url;
 				$rest_menu['meta']['links']['self'] = $rest_url . $id;
@@ -140,6 +142,33 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
 			return $rest_menu;
 		}
+
+        private function nested_menu_items( &$menu_items, $parent = null ) {
+            $parents = array();
+            $children = array();
+
+            array_map(function($i) use ( $parent, &$children, &$parents ){
+                if($i['ID'] != $parent && $i['parent'] == $parent) {
+                    $parents[] = $i;
+                }else {
+                    $children[] = $i;
+                }
+            }, $menu_items);
+
+            foreach($parents as &$parent) {
+                if($this->has_children( $children, $parent['ID'] ) ) {
+                    $parent['children'] = $this->nested_menu_items( $children, $parent['ID'] );
+                }
+            }
+
+            return $parents;
+        }
+
+        private function has_children ( $items, $id ){
+            return array_filter($items, function( $i ) use ( $id ) {
+                return $i['parent'] == $id;
+            });
+        }
 
 		/**
 		 * Get menu locations
