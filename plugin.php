@@ -47,14 +47,13 @@ if ( ! function_exists ( 'wp_json_menus_init' ) ) :
 	 */
 
     function wp_rest_menus_init() {
-        $apiVersion = get_option( 'rest_api_plugin_version', get_option( 'json_api_plugin_version', null ) );
 
-        if(preg_match('/^2/', $apiVersion, $match, PREG_OFFSET_CAPTURE)){
+        if( class_exists("WP_REST_Server") ) {
             $class = new WP_REST_Menus();
             add_filter( 'rest_api_init', array( $class, 'register_routes') );
         }else {
             $class = new WP_JSON_Menus();
-            add_action( 'wp_json_server_before_serve', array( $class, 'register_routes' ) );
+            add_action( 'json_endpoints', array( $class, 'register_routes' ) );
         }
     }
 

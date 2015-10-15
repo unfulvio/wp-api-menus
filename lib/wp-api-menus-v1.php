@@ -29,7 +29,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 * @return array Modified routes
 		 */
 		public function register_routes( $routes ) {
-
+            
 			// all registered menus
 			$routes['/menus'] = array(
 				array( array( $this, 'get_menus' ), WP_JSON_Server::READABLE ),
