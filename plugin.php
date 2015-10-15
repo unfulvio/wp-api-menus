@@ -37,19 +37,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // include main class
-include_once dirname( __FILE__ ) . '/lib/wp-api-menus.php';
+include_once dirname( __FILE__ ) . '/lib/wp-api-menus-v1.php';
+include_once dirname( __FILE__ ) . '/lib/wp-api-menus-v2.php';
 
 if ( ! function_exists ( 'wp_json_menus_init' ) ) :
 
 	/**
 	 * Init JSON REST API Menu routes
 	 */
-	function wp_json_menus_init() {
 
-		$class = new WP_JSON_Menus();
-		add_filter( 'json_endpoints', array( $class, 'register_routes' ) );
+    function wp_rest_menus_init() {
 
-	}
-	add_action( 'wp_json_server_before_serve', 'wp_json_menus_init' );
+        if( class_exists("WP_REST_Server") ) {
+            $class = new WP_REST_Menus();
+            add_filter( 'rest_api_init', array( $class, 'register_routes') );
+        }else {
+            $class = new WP_JSON_Menus();
+            add_action( 'json_endpoints', array( $class, 'register_routes' ) );
+        }
+    }
+
+    add_action( 'init', 'wp_rest_menus_init' );
 
 endif;
