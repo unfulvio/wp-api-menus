@@ -189,7 +189,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			}
 
 			$menu = array();
-			while( $sorted_menu_items ) :
+			while ( $sorted_menu_items ) :
 
 				$i = 0;
 				foreach ( $top_level_menu_items as $top_item ) :

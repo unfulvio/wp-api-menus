@@ -45,14 +45,14 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             register_rest_route( 'wp-api-menus/v2', '/'.$base, array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array($this, 'get_menus')
+                    'callback' => array( $this, 'get_menus' ),
                 )
             ) );
 
             register_rest_route( 'wp-api-menus/v2', '/'.$base.'/(?P<id>\d+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array($this, 'get_menu'),
+                    'callback' => array( $this, 'get_menu' ),
                     'args'            => array(
                         'context'          => array(
                             'default'      => 'view',
@@ -64,16 +64,16 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             register_rest_route( 'wp-api-menus/v2', '/menu-locations', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array($this, 'get_menu_locations')
+                    'callback' => array( $this, 'get_menu_locations' ),
                 )
-            ));
+            ) );
 
             register_rest_route( 'wp-api-menus/v2', '/menu-locations/(?P<location>[a-zA-Z0-9_-]+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array($this, 'get_menu_location')
+                    'callback' => array( $this, 'get_menu_location' ),
                 )
-            ));
+            ) );
 
         }
 
@@ -137,8 +137,9 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 $rest_menu['count']         = abs( $menu['count'] );
 
                 $rest_menu_items = array();
-                foreach( $wp_menu_items as $item_object )
-                    $rest_menu_items[] = $this->format_menu_item( $item_object );
+                foreach ( $wp_menu_items as $item_object ) {
+	                $rest_menu_items[] = $this->format_menu_item( $item_object );
+                }
 
                 $rest_menu_items = $this->nested_menu_items($rest_menu_items, 0);
 
@@ -197,7 +198,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          *
          * @return array
          */
-        private function has_children( $items, $id ){
+        private function has_children( $items, $id ) {
             return array_filter( $items, function( $i ) use ( $id ) {
                 return $i['parent'] == $id;
             } );
