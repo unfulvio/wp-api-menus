@@ -11,28 +11,21 @@ sftp-config.json
 .floo
 .flooignore
 
-### Node ###
+### Dev ###
+/build
 /node_modules/
-/deploy/
-
-### Bower ###
-/bower_components
-
-### Sass ###
-.sass-cache/
-
-### Composer ###
 /vendor/
 composer.lock
 
-### Unit tests ###
+### Tests ###
 /tmp
 /tests/bin/tmp
 
 ### Logs ###
+*.log
 /logs
 
-### VCS ###
+### SVN ###
 .svn
 /svn
 
