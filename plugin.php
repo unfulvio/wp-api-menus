@@ -53,7 +53,7 @@ if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
             add_filter( 'rest_api_init', array( $class, 'register_routes' ) );
         } else {
             $class = new WP_JSON_Menus();
-            add_action( 'json_endpoints', array( $class, 'register_routes' ) );
+            add_filter( 'json_endpoints', array( $class, 'register_routes' ) );
         }
     }
 
