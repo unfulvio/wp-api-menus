@@ -1,3 +1,7 @@
+#### 1.2.0 (18 oct 2015)
+* Added WP REST API v2 support - props @foxpaul
+* Supports WordPress 4.3
+
 #### 1.1.5 (19 jun 2015)
 * Minor edits to headers and phpdocs
 * Improved security
@@ -19,5 +23,5 @@
 * Routes for menus in theme locations now include complete tree with item order and nested children 
 * `description` attribute for individual items is now included in results
 
-### 1.0.0 (21 Jul 2014)
-First public release
+#### 1.0.0 (21 Jul 2014)
+* First public release

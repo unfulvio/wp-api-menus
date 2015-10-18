@@ -10,6 +10,8 @@
  * Author URI:  https://github.com/nekojira
  *
  * Text Domain: wp-api-menus
+ *
+ * @package WP_API_Menus
  */
 
 /**
