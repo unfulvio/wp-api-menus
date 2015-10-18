@@ -7,9 +7,9 @@ module.exports = function( grunt ) {
 	// Files to include in a release.
 	var distFiles =  [
 		'lib/**',
-		'LICENSE.txt',
-		'plugin.php',
-		'README.txt'
+		'license.txt',
+		'wp-api-menus.php',
+		'readme.txt'
 	];
 
 	grunt.initConfig( {
@@ -56,7 +56,7 @@ module.exports = function( grunt ) {
 					cwd            : '',
 					domainPath     : '/languages',
 					potFilename    : 'wp-api-menus.pot',
-					mainFile       : 'plugin.php',
+					mainFile       : 'wp-api-menus.php',
 					include        : [],
 					exclude        : [
 						'assets/',
@@ -122,7 +122,6 @@ module.exports = function( grunt ) {
 			deploy: {
 				options: {
 					plugin_slug     : 'wp-api-menus',
-					plugin_main_file: 'plugin.php',
 					build_dir       : 'build/wp-api-menus',
 					max_buffer      : 400 * 1024
 				}
