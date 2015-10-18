@@ -1,22 +1,18 @@
 <?php
 /**
- * @link              https://github.com/nekojira/wp-api-menus/
- * @package           WP_API_Menus
- * @author            Fulvio Notarstefano <fulvio.notarstefano@gmail.com>
- *
- * @wordpress-plugin
- * Plugin Name: JSON REST API Menu routes
+ * Plugin Name: WP REST API Menus
+ * Plugin URI:  https://github.com/nekojira/wp-api-menus
  * Description: Extends WP API with WordPress menu routes.
- * Author: Fulvio Notarstefano
- * Author URI: https://github.com/nekojira
- * Version: 1.1.5
- * Plugin URI: https://github.com/nekojira/wp-api-menus
+ *
+ * Version:     1.2.0
+ *
+ * Author:      Fulvio Notarstefano
+ * Author URI:  https://github.com/nekojira
+ *
+ * Text Domain: wp-api-menus
  */
 
 /**
- * Copyright (c) 2015
- * Fulvio Notarstefano (fulvio.notarstefano@gmail.com) and contributors.
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2 or, at
  * your discretion, any later version, as published by the Free
@@ -36,22 +32,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-// include main class
-include_once dirname( __FILE__ ) . '/lib/wp-api-menus-v1.php';
-include_once dirname( __FILE__ ) . '/lib/wp-api-menus-v2.php';
+// WP API v1.
+include_once 'lib/wp-api-menus-v1.php';
+// WP API v2.
+include_once 'lib/wp-api-menus-v2.php';
 
-if ( ! function_exists ( 'wp_json_menus_init' ) ) :
+if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 
 	/**
-	 * Init JSON REST API Menu routes
+	 * Init JSON REST API Menu routes.
+	 *
+	 * @since 1.0.0
 	 */
-
     function wp_rest_menus_init() {
 
-        if( class_exists("WP_REST_Server") ) {
+        if ( class_exists( 'WP_REST_Server' ) ) {
             $class = new WP_REST_Menus();
-            add_filter( 'rest_api_init', array( $class, 'register_routes') );
-        }else {
+            add_filter( 'rest_api_init', array( $class, 'register_routes' ) );
+        } else {
             $class = new WP_JSON_Menus();
             add_action( 'json_endpoints', array( $class, 'register_routes' ) );
         }
