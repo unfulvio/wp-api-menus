@@ -1,0 +1,51 @@
+filter:
+    excluded_paths:
+        - 'tests/*'
+tools:
+    php_mess_detector:
+        filter:
+            excluded_paths: ['tests/*']
+        config:
+            unused_code_rules: { unused_formal_parameter: true }
+            controversial_rules: { superglobals: false }
+            design_rules: { exit_expression: false }
+    php_analyzer:
+        filter:
+            excluded_paths: ['tests/*']
+        config:
+            parameter_reference_check: { enabled: true }
+            checkstyle: { enabled: true, no_trailing_whitespace: true }
+            unreachable_code: { enabled: true }
+            check_access_control: { enabled: true }
+            typo_checks: { enabled: true }
+            check_variables: { enabled: true }
+            suspicious_code: { enabled: false, overriding_parameter: false, overriding_closure_use: false, parameter_closure_use_conflict: false, parameter_multiple_times: false, non_existent_class_in_instanceof_check: false, non_existent_class_in_catch_clause: false, assignment_of_null_return: false, non_commented_switch_fallthrough: false, non_commented_empty_catch_block: false, overriding_private_members: false, use_statement_alias_conflict: false, precedence_in_condition_assignment: false }
+            dead_assignments: { enabled: true }
+            verify_php_doc_comments: { enabled: true, parameters: true, return: true, suggest_more_specific_types: true, ask_for_return_if_not_inferrable: true, ask_for_param_type_annotation: true }
+            loops_must_use_braces: { enabled: false }
+            check_usage_context: { enabled: true, method_call_on_non_object: { enabled: true, ignore_null_pointer: true }, foreach: { value_as_reference: true, traversable: true }, missing_argument: true, argument_type_checks: lenient }
+            simplify_boolean_return: { enabled: false }
+            phpunit_checks: { enabled: false }
+            reflection_checks: { enabled: false }
+            precedence_checks: { enabled: true, assignment_in_condition: true, comparison_of_bit_result: true }
+            basic_semantic_checks: { enabled: true }
+            doc_comment_fixes: { enabled: false }
+            reflection_fixes: { enabled: false }
+            use_statement_fixes: { enabled: true, remove_unused: true, preserve_multiple: false, order_alphabetically: false }
+    php_code_sniffer:
+        #command: 'phpcs -n -s -p -v'
+        filter:
+            excluded_paths: ['tests/*']
+        config:
+            tab_width: '2'
+            standard: WordPress
+            sniffs: { psr1: { files: { side_effects_sniff: false } }, generic: { code_analysis: { for_loop_with_test_function_call_sniff: false, empty_statement_sniff: false, unnecessary_final_modifier_sniff: false, useless_overriding_method_sniff: false, jumbled_incrementer_sniff: false }, php: { deprecated_functions_sniff: false, character_before_php_opening_tag_sniff: false } }, squiz: { scope: { static_this_usage_sniff: false, method_scope_sniff: false, member_var_scope_sniff: false }, classes: { self_member_reference_sniff: false }, php: { non_executable_code_sniff: false } }, wordpress: { arrays: { array_declaration_sniff: true }, classes: { valid_class_name_sniff: true }, files: { file_name_sniff: true }, formatting: { multiple_statement_alignment_sniff: true }, functions: { function_call_signature_sniff: true, function_declaration_argument_spacing_sniff: true }, naming_conventions: { valid_function_name_sniff: true }, objects: { object_instantiation_sniff: true }, php: { discouraged_functions_sniff: true }, strings: { double_quote_usage_sniff: true }, white_space: { control_structure_spacing_sniff: true, operator_spacing_sniff: true, php_indent_sniff: true }, xss: { escape_output_sniff: true } } }
+    sensiolabs_security_checker:
+        filter:
+            excluded_paths: ['tests/*']
+    php_cpd:
+        filter:
+            excluded_paths: ['tests/*']
+    php_pdepend:
+        excluded_dirs:
+            - tests
