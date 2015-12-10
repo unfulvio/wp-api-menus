@@ -341,7 +341,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             $item = (array) $menu_item;
             $menu_item = array(
-                'ID'       => abs( $item['ID'] ),
+                'id'       => abs( $item['ID'] ),
                 'order'    => (int) $item['menu_order'],
                 'parent'   => abs( $item['menu_item_parent'] ),
                 'title'    => $item['title'],
