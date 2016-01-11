@@ -4,7 +4,7 @@
  * Plugin URI:  https://github.com/nekojira/wp-api-menus
  * Description: Extends WP API with WordPress menu routes.
  *
- * Version:     1.2.0
+ * Version:     1.2.1
  *
  * Author:      Fulvio Notarstefano
  * Author URI:  https://github.com/nekojira
@@ -35,9 +35,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // WP API v1.
-include_once 'lib/wp-api-menus-v1.php';
+include_once 'includes/wp-api-menus-v1.php';
 // WP API v2.
-include_once 'lib/wp-api-menus-v2.php';
+include_once 'includes/wp-api-menus-v2.php';
 
 if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 
@@ -48,7 +48,7 @@ if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 	 */
     function wp_rest_menus_init() {
 
-        if ( ! in_array( 'json-rest-api/plugin.php', get_option('active_plugins') ) ) {
+        if ( ! in_array( 'json-rest-api/plugin.php', get_option( 'active_plugins' ) ) ) {
             $class = new WP_REST_Menus();
             add_filter( 'rest_api_init', array( $class, 'register_routes' ) );
         } else {

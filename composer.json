@@ -1,8 +1,8 @@
 {
-  "name": "nekojira/wp-api-menus",
+  "name": "unfulvio/wp-api-menus",
   "description": "Extends WordPress WP API with menu routes.",
   "type": "wordpress-plugin",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "keywords": ["wordpress", "wp", "wp-api", "wp-rest-api", "api", "json"],
   "homepage": "https://github.com/nekojira/wp-api-menus",
   "license": "GPLv2.0+",
@@ -10,7 +10,7 @@
     {
       "name": "Fulvio Notarstefano",
       "email": "fulvio.notarstefano@gmail.com",
-      "homepage": "https://github.com/nekojira",
+      "homepage": "https://github.com/unfulvio",
       "role": "Developer"
     }
   ],

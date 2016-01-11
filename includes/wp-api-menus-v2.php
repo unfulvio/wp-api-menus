@@ -11,16 +11,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
+
     /**
      * WP REST Menus class.
      *
      * WP API Menus support for WP API v2.
      *
      * @package WP_API_Menus
-     *
      * @since 1.2.0
      */
     class WP_REST_Menus {
+
 
 	    /**
 	     * Get WP API namespace.
@@ -31,11 +32,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return 'wp/v2';
         }
 
+
         /**
          * Register menu routes for WP API v2.
          *
          * @since  1.2.0
-         *
          * @return array
          */
         public function register_routes() {
@@ -77,11 +78,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
         }
 
+
         /**
          * Get menus.
          *
          * @since  1.2.0
-         *
          * @return array All registered menus
          */
         public static function get_menus() {
@@ -111,11 +112,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return apply_filters( 'rest_menus_format_menus', $rest_menus );
         }
 
+
         /**
          * Get a menu.
          *
          * @since  1.2.0
-         *
          * @param  $request
          * @return array Menu data
          */
@@ -152,6 +153,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return apply_filters( 'rest_menus_format_menu', $rest_menu );
         }
 
+
         /**
          * Handle nested menu items.
          *
@@ -159,10 +161,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * and recurse over them to return children nested in their parent.
          *
          * @since  1.2.0
-         *
          * @param  $menu_items
          * @param  $parent
-         *
          * @return array
          */
         private function nested_menu_items( &$menu_items, $parent = null ) {
@@ -188,14 +188,13 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return $parents;
         }
 
+
         /**
          * Check if a collection of menu items contains an item that is the parent id of 'id'.
          *
          * @since  1.2.0
-         *
          * @param  array $items
          * @param  int $id
-         *
          * @return array
          */
         private function has_children( $items, $id ) {
@@ -204,11 +203,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             } );
         }
 
+
         /**
          * Get menu locations.
          *
          * @since 1.2.0
-         *
          * @param  $request
          * @return array All registered menus locations
          */
@@ -236,11 +235,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return $rest_menus;
         }
 
+
         /**
          * Get menu for location.
          *
          * @since 1.2.0
-         *
          * @param  $request
          * @return array The menu for the corresponding location
          */
@@ -270,6 +269,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             }
 
             $menu = array();
+
             while ( $sorted_menu_items ) :
 
                 $i = 0;
@@ -292,15 +292,14 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return $menu;
         }
 
+
         /**
          * Returns all child nav_menu_items under a specific parent.
          *
          * @since   1.2.0
-         *
          * @param int   $parent_id      The parent nav_menu_item ID
          * @param array $nav_menu_items Navigation menu items
          * @param bool  $depth          Gives all children or direct children only
-         *
          * @return  array   returns filtered array of nav_menu_items
          */
         public function get_nav_menu_item_children( $parent_id, $nav_menu_items, $depth = true ) {
@@ -326,15 +325,14 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return $nav_menu_item_list;
         }
 
+
         /**
          * Format a menu item for REST API consumption.
          *
          * @since  1.2.0
-         *
          * @param  object|array $menu_item  The menu item
          * @param  bool         $children   Get menu item children (default false)
          * @param  array        $menu       The menu the item belongs to (used when $children is set to true)
-         *
          * @return array   a formatted menu item for REST
          */
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
@@ -364,6 +362,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return apply_filters( 'rest_menus_format_menu_item', $menu_item );
         }
 
+
     }
+
 
 endif;

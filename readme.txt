@@ -3,8 +3,8 @@ Contributors: nekojira
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P64V9NTEYFKDL
 Tags: wp-api, wp-rest-api, json-rest-api, json, menus, rest, api, menu-routes
 Requires at least: 3.6.0
-Tested up to: 4.3.1
-Stable tag: 1.2.0
+Tested up to: 4.4.1
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,36 +43,49 @@ There's no such thing.
 = Will this plugin do 'X' ? =
 
 You can submit a pull request to:
-https://github.com/nekojira/wp-api-menus
-However, menu data organization in json is a bit arbitrary, and that's why probably hasn't made it into WP API by the time of writing. You could also fork this plugin altogether and write your json output for a specific use case.
+https://github.com/unfulvio/wp-api-menus
+However, menu data organization in json is a bit arbitrary and subjective, and that's why probably hasn't made it into WP API by the time of writing. You could also fork this plugin altogether and write your json output for a specific use case.
 
 == Screenshots ==
 
-Nothing to show really, this plugin has no settings or frontend.
+Nothing to show really, this plugin has no settings or frontend, it just extends WP API with new routes. It's up to you how to use them :)
 
 == Changelog ==
 
+= 1.2.1 =
+* Tweak: Use lowercase `id` instead of uppercase `ID` in API responses, to match the standard lowercase `id` used across WP REST API - props @puredazzle
+* Fix: Fixed WP API v1 version detection for WordPress 4.4 - props	Thomas Chille
+
 = 1.2.0 =
-* Added WP REST API v2 support - props @foxpaul
-* Supports WordPress 4.3
+* Enhancement: Added WP REST API v2 support - props @foxpaul
+* Misc: Supports WordPress 4.3
+
+= 1.1.5 =
+* Misc: Minor edits to headers and phpdocs
+* Misc: Improved security
 
 = 1.1.4 =
-* Supports WordPress 4.2
+* Misc: Supports WordPress 4.2, add composer.json for wp-packagist
 
 = 1.1.3 =
-* Fixes bug where duplicate items where created in nested menus - props @josh-taylor
+* Fix: Fixes bug where duplicate items where created in nested menus - props @josh-taylor
 
 = 1.1.2 =
-* Introduced `json_menus_format_menu_item` filter hook - props @Noctine
+* Tweak: Introduced `json_menus_format_menu_item` filter hook - props @Noctine
 
 = 1.1.1 =
-* Submission to WordPress.org plugins repository.
+* Misc: Submission to WordPress.org plugins directory.
 
 = 1.1.0 =
-* Fixed typo confusing `parent` with `collection` in meta
-* Routes for menus in theme locations now include complete tree with item order and nested children
-* `description` attribute for individual items is now included in results
+* Enhancement: Routes for menus in theme locations now include complete tree with item order and nested children
+* Tweak: `description` attribute for individual items is now included in results
+* Fix: Fixed typo confusing `parent` with `collection` in meta   
 
 = 1.0.0 =
-First public release
+* First public release
 
+== Upgrade Notice ==
+
+= 1.2.1 =
+
+Mind lowercase `id` instead of uppercase `ID` in API responses, to match the standard for `id` used across WP REST API.

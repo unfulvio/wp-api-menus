@@ -2,12 +2,12 @@
   "name": "wp-api-menus",
   "title": "WP API Menus",
   "description": "Extends the WordPress JSON REST WP API with new routes pointing to WordPress menus.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "GPL-2.0+",
   "homepage": "https://wordpress.org/plugins/wp-api-menus",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nekojira/wp-api-menus"
+    "url": "https://github.com/unfulvio/wp-api-menus"
   },
   "keywords": [],
   "devDependencies": {

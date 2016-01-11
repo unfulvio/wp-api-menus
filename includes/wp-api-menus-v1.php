@@ -11,24 +11,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
+
 	/**
 	 * WP JSON Menus class.
 	 *
 	 * WP API Menus support for WP API v1.
 	 *
 	 * @package WP_API_Menus
-	 *
 	 * @since 1.0.0
 	 */
 	class WP_JSON_Menus {
+
 
 		/**
 		 * Register menu routes for WP API.
 		 *
 		 * @since 1.0.0
-		 *
 		 * @param  array $routes Existing routes
-		 *
 		 * @return array Modified routes
 		 */
 		public function register_routes( $routes ) {
@@ -53,11 +52,11 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return $routes;
 		}
 
+
 		/**
 		 * Get menus.
 		 *
 		 * @since  1.0.0
-		 *
 		 * @return array All registered menus
 		 */
 		public static function get_menus() {
@@ -87,13 +86,12 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return $json_menus;
 		}
 
+
 		/**
 		 * Get a menu.
 		 *
 		 * @since  1.0.0
-		 *
 		 * @param  int   $id ID of the menu
-		 *
 		 * @return array Menu data
 		 */
 		public function get_menu( $id ) {
@@ -126,11 +124,11 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return $json_menu;
 		}
 
+
 		/**
 		 * Get menu locations.
 		 *
 		 * @since  1.0.0
-		 *
 		 * @return array All registered menus locations
 		 */
 		public static function get_menu_locations() {
@@ -157,13 +155,12 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return $json_menus;
 		}
 
+
 		/**
 		 * Get menu for location.
 		 *
 		 * @since  1.0.0
-		 *
 		 * @param  string $location The theme location menu name
-		 *
 		 * @return array The menu for the corresponding location
 		 */
 		public function get_menu_location( $location ) {
@@ -211,15 +208,14 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return $menu;
 		}
 
+
 		/**
 		 * Returns all child nav_menu_items under a specific parent.
 		 *
 		 * @since  1.1.0
-		 *
 		 * @param  int     $parent_id      the parent nav_menu_item ID
 		 * @param  array   $nav_menu_items navigation menu items
 		 * @param  bool    $depth          gives all children or direct children only
-		 *
 		 * @return array   returns filtered array of nav_menu_items
 		 */
 		public function get_nav_menu_item_children( $parent_id, $nav_menu_items, $depth = true ) {
@@ -245,15 +241,14 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return $nav_menu_item_list;
 		}
 
+
 		/**
 		 * Format a menu item for JSON API consumption.
 		 *
 		 * @since   1.1.0
-		 *
 		 * @param   object|array    $menu_item  the menu item
 		 * @param   bool            $children   get menu item children (default false)
 		 * @param   array           $menu       the menu the item belongs to (used when $children is set to true)
-		 *
 		 * @return  array   a formatted menu item for JSON
 		 */
 		public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
@@ -282,6 +277,8 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			return apply_filters( 'json_menus_format_menu_item', $menu_item );
 		}
 
+
 	}
+
 
 endif;
