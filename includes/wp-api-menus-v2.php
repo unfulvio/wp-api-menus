@@ -350,7 +350,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-
+	        
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
                 'order'       => (int) $item['menu_order'],
