@@ -78,7 +78,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menus[ $i ]['count']        = $menu['count'];
 
 				$json_menus[ $i ]['meta']['links']['collection'] = $json_url;
-				$json_menus[ $i ]['meta']['links']['self'] = $json_url . $menu['term_id'];
+				$json_menus[ $i ]['meta']['links']['self']       = $json_url . $menu['term_id'];
 
 				$i ++;
 			endforeach;
@@ -96,11 +96,12 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 */
 		public function get_menu( $id ) {
 
-			$json_url = get_json_url() . '/menus/';
+			$json_url       = get_json_url() . '/menus/';
 			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
-			$wp_menu_items = $id ? wp_get_nav_menu_items( $id ) : array();
+			$wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
 
 			$json_menu = array();
+
 			if ( $wp_menu_object ) :
 
 				$menu = (array) $wp_menu_object;
@@ -115,9 +116,9 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					$json_menu_items[] = $this->format_menu_item( $item_object );
 				}
 
-				$json_menu['items'] = $json_menu_items;
+				$json_menu['items']                       = $json_menu_items;
 				$json_menu['meta']['links']['collection'] = $json_url;
-				$json_menu['meta']['links']['self'] = $json_url . $id;
+				$json_menu['meta']['links']['self']       = $json_url . $id;
 
 			endif;
 
@@ -143,10 +144,10 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 				foreach ( $registered_menus as $slug => $label ) :
 
-					$json_menus[ $slug ]['ID'] = $locations[ $slug ];
-					$json_menus[ $slug ]['label'] = $label;
+					$json_menus[ $slug ]['ID']                          = $locations[ $slug ];
+					$json_menus[ $slug ]['label']                       = $label;
 					$json_menus[ $slug ]['meta']['links']['collection'] = $json_url;
-					$json_menus[ $slug ]['meta']['links']['self'] = $json_url . $slug;
+					$json_menus[ $slug ]['meta']['links']['self']       = $json_url . $slug;
 
 				endforeach;
 
@@ -254,25 +255,27 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
 			$item = (array) $menu_item;
+
 			$menu_item = array(
-				'ID'       => abs( $item['ID'] ),
-				'order'    => (int) $item['menu_order'],
-				'parent'   => abs( $item['menu_item_parent'] ),
-				'title'    => $item['title'],
-				'url'      => $item['url'],
-				'attr'     => $item['attr_title'],
-				'target'   => $item['target'],
-				'classes'  => implode( ' ', $item['classes'] ),
-				'xfn'      => $item['xfn'],
+				'ID'          => abs( $item['ID'] ),
+				'order'       => (int) $item['menu_order'],
+				'parent'      => abs( $item['menu_item_parent'] ),
+				'title'       => $item['title'],
+				'url'         => $item['url'],
+				'attr'        => $item['attr_title'],
+				'target'      => $item['target'],
+				'classes'     => implode( ' ', $item['classes'] ),
+				'xfn'         => $item['xfn'],
 				'description' => $item['description'],
-				'object_id' => abs( $item['object_id'] ),
-				'object'   => $item['object'],
-				'type'     => $item['type'],
-				'type_label' => $item['type_label'],
+				'object_id'   => abs( $item['object_id'] ),
+				'object'      => $item['object'],
+				'type'        => $item['type'],
+				'type_label'  => $item['type_label'],
 			);
 
-			if ( $children === true && ! empty( $menu ) )
+			if ( $children === true && ! empty( $menu ) ) {
 				$menu_item['children'] = $this->get_nav_menu_item_children( $item['ID'], $menu );
+			}
 
 			return apply_filters( 'json_menus_format_menu_item', $menu_item );
 		}

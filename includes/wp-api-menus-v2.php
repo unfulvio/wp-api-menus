@@ -27,10 +27,22 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 	     * Get WP API namespace.
 	     *
 	     * @since 1.2.0
+	     * @return string
 	     */
-        public static function api_namespace() {
+        public static function get_api_namespace() {
             return 'wp/v2';
         }
+
+
+	    /**
+	     * Get WP API Menus namespace.
+	     *
+	     * @since 1.2.1
+	     * @return string
+	     */
+	    public static function get_plugin_namespace() {
+		    return 'wp-api-menus/v2';
+	    }
 
 
         /**
@@ -41,35 +53,33 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public function register_routes() {
 
-            $base = 'menus';
-
-            register_rest_route( 'wp-api-menus/v2', '/'.$base, array(
+            register_rest_route( self::get_plugin_namespace(), '/menus', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menus' ),
                 )
             ) );
 
-            register_rest_route( 'wp-api-menus/v2', '/'.$base.'/(?P<id>\d+)', array(
+            register_rest_route( self::get_plugin_namespace(), '/menus/(?P<id>\d+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu' ),
-                    'args'            => array(
-                        'context'          => array(
-                            'default'      => 'view',
+                    'args'     => array(
+                        'context' => array(
+                        'default' => 'view',
                         ),
                     ),
                 )
             ) );
 
-            register_rest_route( 'wp-api-menus/v2', '/menu-locations', array(
+            register_rest_route( self::get_plugin_namespace(), '/menu-locations', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_locations' ),
                 )
             ) );
 
-            register_rest_route( 'wp-api-menus/v2', '/menu-locations/(?P<location>[a-zA-Z0-9_-]+)', array(
+            register_rest_route( self::get_plugin_namespace(), '/menu-locations/(?P<location>[a-zA-Z0-9_-]+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_location' ),
@@ -87,7 +97,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public static function get_menus() {
 
-            $rest_url = get_rest_url() . '/menus/';
+            $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
             $wp_menus = wp_get_nav_menus();
 
             $i = 0;
@@ -122,20 +132,21 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public function get_menu( $request ) {
 
-            $id = (int) $request['id'];
-            $rest_url = get_rest_url() . self::api_namespace() . '/menus/';
+            $id             = (int) $request['id'];
+            $rest_url       = get_rest_url() . self::get_api_namespace() . '/menus/';
             $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
-            $wp_menu_items = $id ? wp_get_nav_menu_items( $id ) : array();
+            $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
 
             $rest_menu = array();
+
             if ( $wp_menu_object ) :
 
                 $menu = (array) $wp_menu_object;
-                $rest_menu['ID']            = abs( $menu['term_id'] );
-                $rest_menu['name']          = $menu['name'];
-                $rest_menu['slug']          = $menu['slug'];
-                $rest_menu['description']   = $menu['description'];
-                $rest_menu['count']         = abs( $menu['count'] );
+                $rest_menu['ID']          = abs( $menu['term_id'] );
+                $rest_menu['name']        = $menu['name'];
+                $rest_menu['slug']        = $menu['slug'];
+                $rest_menu['description'] = $menu['description'];
+                $rest_menu['count']       = abs( $menu['count'] );
 
                 $rest_menu_items = array();
                 foreach ( $wp_menu_items as $item_object ) {
@@ -144,9 +155,9 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
                 $rest_menu_items = $this->nested_menu_items($rest_menu_items, 0);
 
-                $rest_menu['items'] = $rest_menu_items;
+                $rest_menu['items']                       = $rest_menu_items;
                 $rest_menu['meta']['links']['collection'] = $rest_url;
-                $rest_menu['meta']['links']['self'] = $rest_url . $id;
+                $rest_menu['meta']['links']['self']       = $rest_url . $id;
 
             endif;
 
@@ -180,6 +191,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             }, $menu_items );
 
             foreach ( $parents as &$parent ) {
+
                 if ( $this->has_children( $children, $parent['ID'] ) ) {
                     $parent['children'] = $this->nested_menu_items( $children, $parent['ID'] );
                 }
@@ -213,7 +225,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public static function get_menu_locations( $request ) {
 
-            $rest_url = get_rest_url() . self::api_namespace() . '/menu-locations/';
+            $rest_url = get_rest_url() . self::get_api_namespace() . '/menu-locations/';
 
             $locations = get_nav_menu_locations();
             $registered_menus = get_registered_nav_menus();
@@ -223,10 +235,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
                 foreach ( $registered_menus as $slug => $label ) :
 
-                    $rest_menus[ $slug ]['ID'] = $locations[ $slug ];
-                    $rest_menus[ $slug ]['label'] = $label;
+                    $rest_menus[ $slug ]['ID']                          = $locations[ $slug ];
+                    $rest_menus[ $slug ]['label']                       = $label;
                     $rest_menus[ $slug ]['meta']['links']['collection'] = $rest_url;
-                    $rest_menus[ $slug ]['meta']['links']['self'] = $rest_url . $slug;
+                    $rest_menus[ $slug ]['meta']['links']['self']       = $rest_url . $slug;
 
                 endforeach;
 
@@ -338,21 +350,22 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
+	        
             $menu_item = array(
-                'id'       => abs( $item['ID'] ),
-                'order'    => (int) $item['menu_order'],
-                'parent'   => abs( $item['menu_item_parent'] ),
-                'title'    => $item['title'],
-                'url'      => $item['url'],
-                'attr'     => $item['attr_title'],
-                'target'   => $item['target'],
-                'classes'  => implode( ' ', $item['classes'] ),
-                'xfn'      => $item['xfn'],
+                'id'          => abs( $item['ID'] ),
+                'order'       => (int) $item['menu_order'],
+                'parent'      => abs( $item['menu_item_parent'] ),
+                'title'       => $item['title'],
+                'url'         => $item['url'],
+                'attr'        => $item['attr_title'],
+                'target'      => $item['target'],
+                'classes'     => implode( ' ', $item['classes'] ),
+                'xfn'         => $item['xfn'],
                 'description' => $item['description'],
-                'object_id' => abs( $item['object_id'] ),
-                'object'   => $item['object'],
-                'type'     => $item['type'],
-                'type_label' => $item['type_label'],
+                'object_id'   => abs( $item['object_id'] ),
+                'object'      => $item['object'],
+                'type'        => $item['type'],
+                'type_label'  => $item['type_label'],
             );
 
             if ( $children === true && ! empty( $menu ) ) {
