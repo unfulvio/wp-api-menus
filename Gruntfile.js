@@ -6,7 +6,7 @@ module.exports = function( grunt ) {
 
 	// Files to include in a release.
 	var distFiles =  [
-		'lib/**',
+		'includes/**',
 		'license.txt',
 		'wp-api-menus.php',
 		'readme.txt'
