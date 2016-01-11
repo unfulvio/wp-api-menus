@@ -25,6 +25,12 @@ Currently, the `menu-locations/<location>` route for individual menus will retur
 
 You can alter the data arrangement of each individual menu items and children using the filter hook `json_menus_format_menu_item`.
 
+**An important note on WP API V2:**
+
+In V1 the routes are located by default at `wp-json/menus/` etc.
+
+In V2 the routes by default are at `wp-json/wp-api-menus/v2/` (e.g. `wp-json/wp-api-menus/v2/menus/`, etc.) since V2 encourages prefixing and version namespacing.
+
 == Installation ==
 
 This plugin requires having [WP API](https://wordpress.org/plugins/json-rest-api/) installed and activated or it won't be of any use.
@@ -53,7 +59,7 @@ Nothing to show really, this plugin has no settings or frontend, it just extends
 == Changelog ==
 
 = 1.2.1 =
-* Tweak: Use lowercase `id` instead of uppercase `ID` in API responses, to match the standard lowercase `id` used across WP REST API - props @puredazzle
+* Tweak (V2 only): Use lowercase `id` instead of uppercase `ID` in API responses, to match the standard lowercase `id` used across WP REST API - props @puredazzle
 * Fix: Fixed WP API v1 version detection for WordPress 4.4 - props	Thomas Chille
 
 = 1.2.0 =
@@ -88,4 +94,4 @@ Nothing to show really, this plugin has no settings or frontend, it just extends
 
 = 1.2.1 =
 
-Mind lowercase `id` instead of uppercase `ID` in API responses, to match the standard for `id` used across WP REST API.
+API V2 only: mind lowercase `id` instead of uppercase `ID` in API responses, to match the standard for `id` used across WP REST API.

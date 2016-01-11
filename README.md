@@ -15,9 +15,15 @@
 - `/menu-locations` list of all registered theme locations.
 - `/menu-locations/<location>` data for menu in specified menu in theme location. 
 
-Currently, the `menu-locations/<location>` route for individual menus will return a tree with full menu hierarchy, with correct menu item order and listing children for each menu item. The `menus/<id>` route will output menu details and a flat array of menu items. Item order or if each item has a parent will be indicated in each item attributes, but this route won't output items as a tree. 
-
+Currently, the `menu-locations/<location>` route for individual menus will return a tree with full menu hierarchy, with correct menu item order and listing children for each menu item. The `menus/<id>` route will output menu details and a flat array of menu items. Item order or if each item has a parent will be indicated in each item attributes, but this route won't output items as a tree.
+ 
 You can alter the data arrangement of each individual menu items and children using the filter hook `json_menus_format_menu_item`.
+
+#### WP API V2
+
+In V1 of the REST API the routes are located by default at `wp-json/menus/` etc.
+
+In V2 the routes by default are at `wp-json/wp-api-menus/v2/` (e.g. `wp-json/wp-api-menus/v2/menus/`, etc.) since V2 encourages prefixing and version namespacing. 
 
 #### Contributing
 

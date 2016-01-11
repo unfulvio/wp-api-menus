@@ -1,5 +1,5 @@
 #### 1.2.1 (10 Jan 2016)
- * Tweak: Use lowercase `id` instead of uppercase `ID` in API responses, to match the standard lowercase `id` used across WP REST API - props @puredazzle
+ * Tweak (V2 only): Use lowercase `id` instead of uppercase `ID` in API responses, to match the standard lowercase `id` used across WP REST API - props @puredazzle
  * Fix: Fixed WP API v1 version detection for WordPress 4.4 - props	Thomas Chille
 
 #### 1.2.0 (18 oct 2015)
