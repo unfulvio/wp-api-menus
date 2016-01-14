@@ -134,15 +134,19 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		 */
 		public static function get_menu_locations() {
 
-			$json_url = get_json_url() . '/menu-locations/';
-
-			$locations = get_nav_menu_locations();
+			$locations        = get_nav_menu_locations();
 			$registered_menus = get_registered_nav_menus();
+			$json_url         = get_json_url() . '/menu-locations/';
+			$json_menus       = array();
 
-			$json_menus = array();
 			if ( $locations && $registered_menus ) :
 
 				foreach ( $registered_menus as $slug => $label ) :
+
+					// Sanity check
+					if ( ! isset( $locations[ $slug ] ) ) {
+						continue;
+					}
 
 					$json_menus[ $slug ]['ID']                          = $locations[ $slug ];
 					$json_menus[ $slug ]['label']                       = $label;
@@ -167,8 +171,9 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		public function get_menu_location( $location ) {
 
 			$locations = get_nav_menu_locations();
-			if ( ! isset( $locations[ $location ] ) )
+			if ( ! isset( $locations[ $location ] ) ) {
 				return array();
+			}
 
 			$wp_menu = wp_get_nav_menu_object( $locations[ $location ] );
 			$menu_items = wp_get_nav_menu_items( $wp_menu->term_id );
@@ -179,7 +184,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
 			}
 			foreach ( $sorted_menu_items as $menu_item ) {
-				if ( $menu_item->menu_item_parent != 0 ) {
+				if ( (int) $menu_item->menu_item_parent !== 0 ) {
 					$menu_items_with_children[ $menu_item->menu_item_parent ] = true;
 				} else {
 					$top_level_menu_items[] = $menu_item;

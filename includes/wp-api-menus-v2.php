@@ -225,17 +225,21 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public static function get_menu_locations( $request ) {
 
-            $rest_url = get_rest_url() . self::get_api_namespace() . '/menu-locations/';
-
-            $locations = get_nav_menu_locations();
+            $locations        = get_nav_menu_locations();
             $registered_menus = get_registered_nav_menus();
+	        $rest_url         = get_rest_url() . self::get_api_namespace() . '/menu-locations/';
+            $rest_menus       = array();
 
-            $rest_menus = array();
             if ( $locations && $registered_menus ) :
 
                 foreach ( $registered_menus as $slug => $label ) :
 
-                    $rest_menus[ $slug ]['ID']                          = $locations[ $slug ];
+	                // Sanity check
+	                if ( ! isset( $locations[ $slug ] ) ) {
+		                continue;
+	                }
+
+	                $rest_menus[ $slug ]['ID']                          = $locations[ $slug ];
                     $rest_menus[ $slug ]['label']                       = $label;
                     $rest_menus[ $slug ]['meta']['links']['collection'] = $rest_url;
                     $rest_menus[ $slug ]['meta']['links']['self']       = $rest_url . $slug;
@@ -273,7 +277,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 	            $sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
             }
             foreach ( $sorted_menu_items as $menu_item ) {
-	            if ( $menu_item->menu_item_parent != 0 ) {
+	            if ( (int) $menu_item->menu_item_parent !== 0 ) {
 		            $menu_items_with_children[ $menu_item->menu_item_parent ] = true;
 	            } else {
 		            $top_level_menu_items[] = $menu_item;
