@@ -183,7 +183,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             // Separate menu_items into parents & children.
             array_map( function( $i ) use ( $parent, &$children, &$parents ){
-                if ( $i['ID'] != $parent && $i['parent'] == $parent ) {
+                if ( $i['id'] != $parent && $i['parent'] == $parent ) {
                     $parents[] = $i;
                 } else {
                     $children[] = $i;
@@ -192,8 +192,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             foreach ( $parents as &$parent ) {
 
-                if ( $this->has_children( $children, $parent['ID'] ) ) {
-                    $parent['children'] = $this->nested_menu_items( $children, $parent['ID'] );
+                if ( $this->has_children( $children, $parent['id'] ) ) {
+                    $parent['children'] = $this->nested_menu_items( $children, $parent['id'] );
                 }
             }
 
