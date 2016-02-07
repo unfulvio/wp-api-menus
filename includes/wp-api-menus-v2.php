@@ -271,41 +271,49 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             $wp_menu = wp_get_nav_menu_object( $locations[ $location ] );
             $menu_items = wp_get_nav_menu_items( $wp_menu->term_id );
-            $sorted_menu_items = $top_level_menu_items = $menu_items_with_children = array();
 
-            foreach ( (array) $menu_items as $menu_item ) {
-	            $sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
-            }
-            foreach ( $sorted_menu_items as $menu_item ) {
-	            if ( (int) $menu_item->menu_item_parent !== 0 ) {
-		            $menu_items_with_children[ $menu_item->menu_item_parent ] = true;
-	            } else {
-		            $top_level_menu_items[] = $menu_item;
-	            }
-            }
-
-            $menu = array();
-
-            while ( $sorted_menu_items ) :
-
-                $i = 0;
-                foreach ( $top_level_menu_items as $top_item ) :
-
-                    $menu[ $i ] = $this->format_menu_item( $top_item, false );
-                    if ( isset( $menu_items_with_children[ $top_item->ID ] ) ) {
-	                    $menu[ $i ]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items, false );
-                    } else {
-	                    $menu[ $i ]['children'] = array();
-                    }
-
-                    $i++;
-                endforeach;
-
-                break;
-
-            endwhile;
-
-            return $menu;
+			/**
+			 * wp_get_nav_menu_items() outputs a list that's already sequenced correctly.
+			 * So the easiest thing to do is to reverse the list and then build our tree
+			 * from the ground up
+			 */
+			$rev_items = array_reverse ( $menu_items );
+			$rev_menu = array();
+			$cache = array();
+			foreach ( $rev_items as $item ) :
+				$formatted = array(
+					'ID'          => abs( $item->ID ),
+					'order'       => (int) $item->menu_order,
+					'parent'      => abs( $item->menu_item_parent ),
+					'title'       => $item->title,
+					'url'         => $item->url,
+					'attr'        => $item->attr_title,
+					'target'      => $item->target,
+					'classes'     => implode( ' ', $item->classes ),
+					'xfn'         => $item->xfn,
+					'description' => $item->description,
+					'object_id'   => abs( $item->object_id ),
+					'object'      => $item->object,
+					'type'        => $item->type,
+					'type_label'  => $item->type_label,
+					'children'    => array(),
+				);
+				// Pickup my children
+				if ( array_key_exists ( $item->ID , $cache ) ) {
+					$formatted['children'] = array_reverse ( $cache[ $item->ID ] );
+				}
+				if ( $item->menu_item_parent != 0 ) {
+					// Wait for parent to pick me up
+					if ( array_key_exists ( $item->menu_item_parent , $cache ) ) {
+						array_push( $cache[ $item->menu_item_parent ], $formatted );
+					} else {
+						$cache[ $item->menu_item_parent ] = array( $formatted, );
+					}
+				} else {
+					array_push( $rev_menu, $formatted );
+				}
+			endforeach;
+			return array_reverse ( $rev_menu );
         }
 
 
