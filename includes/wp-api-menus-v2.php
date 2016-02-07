@@ -302,6 +302,9 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 				if ( array_key_exists ( $item->ID , $cache ) ) {
 					$formatted['children'] = array_reverse ( $cache[ $item->ID ] );
 				}
+				
+            	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
+				
 				if ( $item->menu_item_parent != 0 ) {
 					// Wait for parent to pick me up
 					if ( array_key_exists ( $item->menu_item_parent , $cache ) ) {
