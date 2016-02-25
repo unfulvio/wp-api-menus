@@ -3,8 +3,8 @@ Contributors: nekojira
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P64V9NTEYFKDL
 Tags: wp-api, wp-rest-api, json-rest-api, json, menus, rest, api, menu-routes
 Requires at least: 3.6.0
-Tested up to: 4.4.1
-Stable tag: 1.2.1
+Tested up to: 4.4.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,11 @@ However, menu data organization in json is a bit arbitrary and subjective, and t
 Nothing to show really, this plugin has no settings or frontend, it just extends WP API with new routes. It's up to you how to use them :)
 
 == Changelog ==
+
+= 1.3.0 =
+* Fix (V2): Nodes duplication in sublevel menu items, see https://github.com/unfulvio/wp-api-menus/pull/22 - props @bpongvh
+* Fix (V2): The items array was empty because it was looking for "ID" key instead of "id" - props @Dobbler
+* Fix (V1): Check for JSON_API_VERSION constant, as in a mu-plugin installation of WP API 1.0 it will not show up under active_plugins - props @pdufour
 
 = 1.2.1 =
 * Tweak (V2 only): Use lowercase `id` instead of uppercase `ID` in API responses, to match the standard lowercase `id` used across WP REST API - props @puredazzle
