@@ -18,6 +18,7 @@ The new routes available will be:
 
 * `/menus` list of every registered menu.
 * `/menus/<id>` data for a specific menu.
+* `/menu-html/<id>` rendered html for a specific menu.
 * `/menu-locations` list of all registered theme locations.
 * `/menu-locations/<location>` data for menu in specified menu in theme location.
 
