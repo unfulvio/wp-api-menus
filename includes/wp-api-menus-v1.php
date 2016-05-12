@@ -40,6 +40,10 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			$routes['/menus/(?P<id>\d+)'] = array(
 				array( array( $this, 'get_menu' ), WP_JSON_Server::READABLE ),
 			);
+			// a specific menu rendered in html
+			$routes['/menu-html/(?P<id>\d+)'] = array(
+				array( array( $this, 'get_menu_html' ), WP_JSON_Server::READABLE ),
+			);
 			// all registered menu locations
 			$routes['/menu-locations'] = array(
 				array( array( $this, 'get_menu_locations' ), WP_JSON_Server::READABLE ),
@@ -62,6 +66,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		public static function get_menus() {
 
 			$json_url = get_json_url() . '/menus/';
+			$json_url_base = get_json_url();
 			$wp_menus = wp_get_nav_menus();
 
 			$i = 0;
@@ -79,6 +84,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 				$json_menus[ $i ]['meta']['links']['collection'] = $json_url;
 				$json_menus[ $i ]['meta']['links']['self']       = $json_url . $menu['term_id'];
+				$json_menus[ $i ]['meta']['links']['self']       = $json_url_base . '/menu-html/' . $menu['term_id'];
 
 				$i ++;
 			endforeach;
@@ -119,6 +125,43 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menu['items']                       = $json_menu_items;
 				$json_menu['meta']['links']['collection'] = $json_url;
 				$json_menu['meta']['links']['self']       = $json_url . $id;
+
+			endif;
+
+			return $json_menu;
+		}
+
+
+		/**
+		 * Get a menu rendered in html.
+		 *
+		 * @since  1.0.0
+		 * @param  int   $id ID of the menu
+		 * @return array Menu data
+		 */
+		public function get_menu_html( $id ) {
+
+			$json_url_base  = get_json_url();
+			$wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
+			$wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+
+			$json_menu = array();
+
+			if ( $wp_menu_object ) :
+
+				$menu = (array) $wp_menu_object;
+				$json_menu['ID']            = abs( $menu['term_id'] );
+				$json_menu['name']          = $menu['name'];
+				$json_menu['slug']          = $menu['slug'];
+				$json_menu['description']   = $menu['description'];
+				$json_menu['count']         = abs( $menu['count'] );
+
+				ob_start();
+           			wp_nav_menu( array( 'menu' => $id ) );
+           		$json_menu['render_html']=ob_get_clean();
+
+           		$json_menu['meta']['links']['collection'] = $json_url_base . '/menus/';
+				$json_menu['meta']['links']['self']       = $json_url_base . '/menu-html/' . $id;
 
 			endif;
 
