@@ -57,6 +57,12 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menus' ),
+                    'args'     => array(
+                        'items' => array(
+                            'description'  => __( 'Whether to fetch the menu items.' ),
+                            'default'      => false,
+                        ),
+                    ),
                 )
             ) );
 
@@ -93,10 +99,12 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * Get menus.
          *
          * @since  1.2.0
+         * @param  $request
          * @return array All registered menus
          */
-        public static function get_menus() {
+        public function get_menus( $request ) {
 
+            $items = (bool) $request['items'];
             $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
             $wp_menus = wp_get_nav_menus();
 
@@ -112,6 +120,17 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 $rest_menus[ $i ]['slug']        = $menu['slug'];
                 $rest_menus[ $i ]['description'] = $menu['description'];
                 $rest_menus[ $i ]['count']       = $menu['count'];
+
+                if ($items) {
+                    $wp_menu_items = wp_get_nav_menu_items( $menu['term_id'] );
+                    $rest_menu_items = array();
+                    foreach ( $wp_menu_items as $item_object ) {
+                        $rest_menu_items[] = $this->format_menu_item( $item_object );
+                    }
+                    $rest_menu_items = $this->nested_menu_items($rest_menu_items, 0);
+
+                    $rest_menus[ $i ]['items']                   = $rest_menu_items;
+                }
 
                 $rest_menus[ $i ]['meta']['links']['collection'] = $rest_url;
                 $rest_menus[ $i ]['meta']['links']['self']       = $rest_url . $menu['term_id'];
