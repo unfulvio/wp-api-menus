@@ -176,7 +176,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
                 $rest_menu['items']                       = $rest_menu_items;
                 $rest_menu['meta']['links']['collection'] = $rest_url;
-                $rest_menu['meta']['links']['self']       = $rest_url . $menu;
+                $rest_menu['meta']['links']['self']       = $rest_url . abs( $menu['term_id'] );
 
             endif;
 
