@@ -60,10 +60,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 )
             ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menus/(?P<id>\d+)', array(
+            register_rest_route( self::get_plugin_namespace(), '/menu-html/(?P<menu_id>[a-zA-Z0-9_-]+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menu' ),
+                    'callback' => array( $this, 'get_menu_html' ),
                     'args'     => array(
                         'context' => array(
                         'default' => 'view',
@@ -180,7 +180,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		
 		
 
-        /**
+       /**
          * Get a menu rendered in html.
          *
          * @since  1.2.0
@@ -189,10 +189,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public function get_menu_html( $request ) {
 
-            $id             = (int) $request['id'];
+            $menu_id        = $request['menu_id'];
             $rest_url_base  = get_rest_url() . self::get_plugin_namespace();
-            $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
-            $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+            $wp_menu_object = $menu_id ? wp_get_nav_menu_object( $menu_id) : array();
+            $wp_menu_items  = $menu_id ? wp_get_nav_menu_items( $menu_id ) : array();
 
 			$rest_menu = array();
 
@@ -206,16 +206,17 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 $rest_menu['count']       = abs( $menu['count'] );
 
                 ob_start();
-           			wp_nav_menu( array( 'menu' => $id ) );
-           		$rest_menu['render_html']=ob_get_clean();
+           			wp_nav_menu( array( 'menu' => $menu_id ) );
+           		$rest_menu['html']=ob_get_clean();
 
            		$rest_menu['meta']['links']['collection'] = $rest_url_base . '/menus/';
-                $rest_menu['meta']['links']['self']       = $rest_url_base . '/menu-html/' . $id;
+                $rest_menu['meta']['links']['self']       = $rest_url_base . '/menu-html/' . $menu_id;
 
             endif;
 
             return apply_filters( 'rest_menus_format_menu', $rest_menu );
         }
+        
 
         /**
          * Handle nested menu items.
