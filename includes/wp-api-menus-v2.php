@@ -66,7 +66,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 )
             ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menus/(?P<id>\d+)', array(
+            register_rest_route( self::get_plugin_namespace(), '/menus/(?P<menu>[a-zA-Z0-9_-]+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu' ),
@@ -151,10 +151,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public function get_menu( $request ) {
 
-            $id             = (int) $request['id'];
+            $menu           = (string) $request['menu'];
             $rest_url       = get_rest_url() . self::get_api_namespace() . '/menus/';
-            $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
-            $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+            $wp_menu_object = $menu ? wp_get_nav_menu_object( $menu ) : array();
+            $wp_menu_items  = $menu ? wp_get_nav_menu_items( $menu ) : array();
 
             $rest_menu = array();
 

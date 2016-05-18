@@ -12,7 +12,7 @@
 
 - `/menus` list of every registered menu.
   - (V2 only:) `item` argument whether to fetch the menu items. Default: `false`
-- `/menus/<id>` data for a specific menu.
+- `/menus/<menu>` data for a specific menu. Takes either an id, a name or a slug. Note that v1 only supports ids.
 - `/menu-locations` list of all registered theme locations.
 - `/menu-locations/<location>` data for menu in specified menu in theme location.
 
