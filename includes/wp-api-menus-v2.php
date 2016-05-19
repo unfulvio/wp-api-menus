@@ -60,10 +60,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 )
             ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menu-html/(?P<menu_id>[a-zA-Z0-9_-]+)', array(
+            register_rest_route( self::get_plugin_namespace(), '/menus/(?P<id>\d+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menu_html' ),
+                    'callback' => array( $this, 'get_menu' ),
                     'args'     => array(
                         'context' => array(
                         'default' => 'view',
@@ -72,7 +72,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 )
             ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menu-html/(?P<id>\d+)', array(
+
+            register_rest_route( self::get_plugin_namespace(), '/menu-html/(?P<menu_id>[a-zA-Z0-9_-]+)', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_html' ),
@@ -95,6 +96,13 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_location' ),
+                )
+            ) );
+
+            register_rest_route( self::get_plugin_namespace(), '/menu-html-location/(?P<location>[a-zA-Z0-9_-]+)', array(
+                array(
+                    'methods'  => WP_REST_Server::READABLE,
+                    'callback' => array( $this, 'get_menu_html_location' ),
                 )
             ) );
 
@@ -177,13 +185,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             return apply_filters( 'rest_menus_format_menu', $rest_menu );
         }
-		
-		
 
-       /**
+        /**
          * Get a menu rendered in html.
          *
-         * @since  1.2.0
+         * @since  1.x.0
          * @param  $request
          * @return array Menu data
          */
@@ -216,7 +222,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             return apply_filters( 'rest_menus_format_menu', $rest_menu );
         }
-        
+
+
 
         /**
          * Handle nested menu items.
@@ -280,7 +287,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             $locations        = get_nav_menu_locations();
             $registered_menus = get_registered_nav_menus();
-	        $rest_url         = get_rest_url() . self::get_api_namespace() . '/menu-locations/';
+	        $rest_url         = get_rest_url() . self::get_plugin_namespace() . '/menu-locations/';
+	        $rest_url_base    = get_rest_url() . self::get_plugin_namespace();
             $rest_menus       = array();
 
             if ( $locations && $registered_menus ) :
@@ -296,6 +304,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                     $rest_menus[ $slug ]['label']                       = $label;
                     $rest_menus[ $slug ]['meta']['links']['collection'] = $rest_url;
                     $rest_menus[ $slug ]['meta']['links']['self']       = $rest_url . $slug;
+                    $rest_menus[ $slug ]['meta']['links']['html']       = $rest_url_base . '/menu-html-location/' . $slug;
 
                 endforeach;
 
@@ -355,9 +364,9 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 				if ( array_key_exists ( $item->ID , $cache ) ) {
 					$formatted['children'] = array_reverse ( $cache[ $item->ID ] );
 				}
-				
+
             	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
-				
+
 				if ( $item->menu_item_parent != 0 ) {
 					// Wait for parent to pick me up
 					if ( array_key_exists ( $item->menu_item_parent , $cache ) ) {
@@ -370,6 +379,51 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 				}
 			endforeach;
 			return array_reverse ( $rev_menu );
+        }
+
+
+        /**
+         * Get menu rendered in html for location.
+         *
+         * @since 1.x.0
+         * @param  $request
+         * @return array The menu for the corresponding location
+         */
+        public function get_menu_html_location( $request ) {
+
+            $params     = $request->get_params();
+            $location   = $params['location'];
+            $locations  = get_nav_menu_locations();
+
+            //Check if location exists and return empty array if it doesn't
+            if ( ! isset( $locations[ $location ] ) ) {
+	            return array();
+            }
+
+            $rest_url_base  = get_rest_url() . self::get_plugin_namespace();
+            $wp_menu_object = get_term( $locations[$location], 'nav_menu' );
+            $rest_menu = array();
+
+            if ( $wp_menu_object ) :
+
+                $menu = (array) $wp_menu_object;
+                $rest_menu['ID']          	= abs( $menu['term_id'] );
+                $rest_menu['name']        	= $menu['name'];
+                $rest_menu['slug']        	= $menu['slug'];
+                $rest_menu['location_slug'] = $location;
+                $rest_menu['description'] 	= $menu['description'];
+                $rest_menu['count']       	= abs( $menu['count'] );
+
+                ob_start();
+					wp_nav_menu( array( 'theme_location' => $location ) );
+				$rest_menu['html']=ob_get_clean();
+
+           		$rest_menu['meta']['links']['collection'] = $rest_url_base . '/menu-locations/';
+                $rest_menu['meta']['links']['self']       = $rest_url_base . '/menu-html-location/' . $location;
+
+            endif;
+
+			return $rest_menu;
         }
 
 
