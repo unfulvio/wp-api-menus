@@ -40,6 +40,10 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			$routes['/menus/(?P<id>\d+)'] = array(
 				array( array( $this, 'get_menu' ), WP_JSON_Server::READABLE ),
 			);
+			// a specific menu rendered in html
+			$routes['/menu-html/(?P<id>[a-zA-Z0-9_-]+)'] = array(
+				array( array( $this, 'get_menu_html' ), WP_JSON_Server::READABLE ),
+			);
 			// all registered menu locations
 			$routes['/menu-locations'] = array(
 				array( array( $this, 'get_menu_locations' ), WP_JSON_Server::READABLE ),
@@ -47,6 +51,10 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			// menu for given location
 			$routes['/menu-locations/(?P<location>[a-zA-Z0-9_-]+)'] = array(
 				array( array( $this, 'get_menu_location' ), WP_JSON_Server::READABLE ),
+			);
+			// menu for given location rendered in html
+			$routes['/menu-html-location/(?P<location>[a-zA-Z0-9_-]+)'] = array(
+				array( array( $this, 'get_menu_html_location' ), WP_JSON_Server::READABLE ),
 			);
 
 			return $routes;
@@ -62,6 +70,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		public static function get_menus() {
 
 			$json_url = get_json_url() . '/menus/';
+			$json_url_base = get_json_url();
 			$wp_menus = wp_get_nav_menus();
 
 			$i = 0;
@@ -79,6 +88,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 				$json_menus[ $i ]['meta']['links']['collection'] = $json_url;
 				$json_menus[ $i ]['meta']['links']['self']       = $json_url . $menu['term_id'];
+				$json_menus[ $i ]['meta']['links']['self']       = $json_url_base . '/menu-html/' . $menu['term_id'];
 
 				$i ++;
 			endforeach;
@@ -127,6 +137,43 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 
 
 		/**
+		 * Get a menu rendered in html.
+		 *
+		 * @since  1.0.0
+		 * @param  int   $id ID of the menu
+		 * @return array Menu data
+		 */
+		public function get_menu_html( $menu_id ) {
+
+			$json_url_base  = get_json_url();
+			$wp_menu_object = $menu_id ? wp_get_nav_menu_object( $menu_id ) : array();
+			$wp_menu_items  = $menu_id ? wp_get_nav_menu_items( $menu_id ) : array();
+
+			$json_menu = array();
+
+			if ( $wp_menu_object ) :
+
+				$menu = (array) $wp_menu_object;
+				$json_menu['ID']            = abs( $menu['term_id'] );
+				$json_menu['name']          = $menu['name'];
+				$json_menu['slug']          = $menu['slug'];
+				$json_menu['description']   = $menu['description'];
+				$json_menu['count']         = abs( $menu['count'] );
+
+				ob_start();
+           			wp_nav_menu( array( 'menu' => $menu_id ) );
+           		$json_menu['html']=ob_get_clean();
+
+           		$json_menu['meta']['links']['collection'] = $json_url_base . '/menus/';
+				$json_menu['meta']['links']['self']       = $json_url_base . '/menu-html/' . $menu_id;
+
+			endif;
+
+			return $json_menu;
+		}
+
+
+		/**
 		 * Get menu locations.
 		 *
 		 * @since  1.0.0
@@ -137,6 +184,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			$locations        = get_nav_menu_locations();
 			$registered_menus = get_registered_nav_menus();
 			$json_url         = get_json_url() . '/menu-locations/';
+			$json_url_base    = get_json_url();
 			$json_menus       = array();
 
 			if ( $locations && $registered_menus ) :
@@ -152,6 +200,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					$json_menus[ $slug ]['label']                       = $label;
 					$json_menus[ $slug ]['meta']['links']['collection'] = $json_url;
 					$json_menus[ $slug ]['meta']['links']['self']       = $json_url . $slug;
+					$json_menus[ $slug ]['meta']['links']['html']       = $json_url_base . '/menu-html-location/' . $slug;
 
 				endforeach;
 
@@ -212,6 +261,47 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			endwhile;
 
 			return $menu;
+		}
+
+		/**
+		 * Get menu rendered in html for location.
+		 *
+		 * @since  1.x.0
+		 * @param  string $location The theme location menu name
+		 * @return array The menu for the corresponding location
+		 */
+		public static function get_menu_html_location( $location ) {
+
+			$locations        = get_nav_menu_locations();
+			if ( ! isset( $locations[ $location ] ) ) {
+				return array();
+			}
+
+			$wp_menu_object = get_term( $locations[$location], 'nav_menu' );
+			$json_url_base  = get_json_url();
+
+			$json_menu      = array();
+
+			if ( $wp_menu_object ) :
+
+				$menu = (array) $wp_menu_object;
+				$json_menu['ID']            = abs( $menu['term_id'] );
+				$json_menu['name']          = $menu['name'];
+				$json_menu['slug']          = $menu['slug'];
+				$json_menu['location_slug'] = $location;
+				$json_menu['description']   = $menu['description'];
+				$json_menu['count']         = abs( $menu['count'] );
+
+				ob_start();
+           			wp_nav_menu( array( 'menu' => $location ) );
+           		$json_menu['html']=ob_get_clean();
+
+           		$json_menu['meta']['links']['collection'] = $json_url_base . '/menu-locations/';
+				$json_menu['meta']['links']['self']       = $json_url_base . '/menu-html-location/' . $location;
+
+			endif;
+
+			return $json_menu;
 		}
 
 
