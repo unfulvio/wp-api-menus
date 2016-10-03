@@ -17,7 +17,8 @@ This plugin extends the [WordPress JSON REST API](https://wordpress.org/plugins/
 The new routes available will be:
 
 * `/menus` list of every registered menu.
-* `/menus/<id>` data for a specific menu.
+  * (V2 only:) `item` argument whether to fetch the menu items. Default: `false`
+* `/menus/<menu>` data for a specific menu. Takes either an id, a name or a slug. Note that v1 only supports ids.
 * `/menu-locations` list of all registered theme locations.
 * `/menu-locations/<location>` data for menu in specified menu in theme location.
 
@@ -93,7 +94,7 @@ Nothing to show really, this plugin has no settings or frontend, it just extends
 = 1.1.0 =
 * Enhancement: Routes for menus in theme locations now include complete tree with item order and nested children
 * Tweak: `description` attribute for individual items is now included in results
-* Fix: Fixed typo confusing `parent` with `collection` in meta   
+* Fix: Fixed typo confusing `parent` with `collection` in meta
 
 = 1.0.0 =
 * First public release
