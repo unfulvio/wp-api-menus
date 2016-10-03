@@ -1,3 +1,6 @@
+### 1.3.1 (03 Oct 2016)
+ * Tweak: The `object_slug` property is now available to get the slug for relative URLs - props @Fahrradflucht
+
 #### 1.3.0 (25 Feb 2016)
  * Fix (V2): Nodes duplication in sublevel menu items, see https://github.com/unfulvio/wp-api-menus/pull/22 - props @bpongvh
  * Fix (V2): The items array was empty because it was looking for "ID" key instead of "id" - props @Dobbler

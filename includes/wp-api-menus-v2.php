@@ -49,7 +49,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * Register menu routes for WP API v2.
          *
          * @since  1.2.0
-         * @return array
          */
         public function register_routes() {
 
@@ -85,7 +84,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                     'callback' => array( $this, 'get_menu_location' ),
                 )
             ) );
-
         }
 
 
@@ -278,9 +276,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 			 * from the ground up
 			 */
 			$rev_items = array_reverse ( $menu_items );
-			$rev_menu = array();
-			$cache = array();
+			$rev_menu  = array();
+			$cache     = array();
+
 			foreach ( $rev_items as $item ) :
+
 				$formatted = array(
 					'ID'          => abs( $item->ID ),
 					'order'       => (int) $item->menu_order,
@@ -298,24 +298,28 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 					'type_label'  => $item->type_label,
 					'children'    => array(),
 				);
-				// Pickup my children
-				if ( array_key_exists ( $item->ID , $cache ) ) {
-					$formatted['children'] = array_reverse ( $cache[ $item->ID ] );
+
+				if ( array_key_exists( $item->ID , $cache ) ) {
+					$formatted['children'] = array_reverse( $cache[ $item->ID ] );
 				}
 
             	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
 
 				if ( $item->menu_item_parent != 0 ) {
-					// Wait for parent to pick me up
-					if ( array_key_exists ( $item->menu_item_parent , $cache ) ) {
+
+					if ( array_key_exists( $item->menu_item_parent , $cache ) ) {
 						array_push( $cache[ $item->menu_item_parent ], $formatted );
 					} else {
 						$cache[ $item->menu_item_parent ] = array( $formatted, );
 					}
+
 				} else {
+
 					array_push( $rev_menu, $formatted );
 				}
+
 			endforeach;
+
 			return array_reverse ( $rev_menu );
         }
 
@@ -327,7 +331,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @param int   $parent_id      The parent nav_menu_item ID
          * @param array $nav_menu_items Navigation menu items
          * @param bool  $depth          Gives all children or direct children only
-         * @return  array   returns filtered array of nav_menu_items
+         * @return array	returns filtered array of nav_menu_items
          */
         public function get_nav_menu_item_children( $parent_id, $nav_menu_items, $depth = true ) {
 
@@ -360,7 +364,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @param  object|array $menu_item  The menu item
          * @param  bool         $children   Get menu item children (default false)
          * @param  array        $menu       The menu the item belongs to (used when $children is set to true)
-         * @return array   a formatted menu item for REST
+         * @return array	a formatted menu item for REST
          */
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
@@ -379,7 +383,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'description' => $item['description'],
                 'object_id'   => abs( $item['object_id'] ),
                 'object'      => $item['object'],
-                'object_slug' => get_post($item['object_id'])->post_name,
+                'object_slug' => get_post( $item['object_id'] )->post_name,
                 'type'        => $item['type'],
                 'type_label'  => $item['type_label'],
             );

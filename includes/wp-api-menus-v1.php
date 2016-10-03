@@ -64,8 +64,9 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			$json_url = get_json_url() . '/menus/';
 			$wp_menus = wp_get_nav_menus();
 
-			$i = 0;
+			$i          = 0;
 			$json_menus = array();
+
 			foreach ( $wp_menus as $wp_menu ) :
 
 				$menu = (array) $wp_menu;
@@ -81,6 +82,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menus[ $i ]['meta']['links']['self']       = $json_url . $menu['term_id'];
 
 				$i ++;
+
 			endforeach;
 
 			return $json_menus;
@@ -112,7 +114,9 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 				$json_menu['count']         = abs( $menu['count'] );
 
 				$json_menu_items = array();
+
 				foreach ( $wp_menu_items as $item_object ) {
+
 					$json_menu_items[] = $this->format_menu_item( $item_object );
 				}
 
@@ -171,7 +175,9 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 		public function get_menu_location( $location ) {
 
 			$locations = get_nav_menu_locations();
+
 			if ( ! isset( $locations[ $location ] ) ) {
+
 				return array();
 			}
 
@@ -181,9 +187,12 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			$sorted_menu_items = $top_level_menu_items = $menu_items_with_children = array();
 
 			foreach ( (array) $menu_items as $menu_item ) {
+
 				$sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
 			}
+
 			foreach ( $sorted_menu_items as $menu_item ) {
+
 				if ( (int) $menu_item->menu_item_parent !== 0 ) {
 					$menu_items_with_children[ $menu_item->menu_item_parent ] = true;
 				} else {
@@ -192,12 +201,15 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			}
 
 			$menu = array();
+
 			while ( $sorted_menu_items ) :
 
 				$i = 0;
+
 				foreach ( $top_level_menu_items as $top_item ) :
 
 					$menu[ $i ] = $this->format_menu_item( $top_item, false );
+
 					if ( isset( $menu_items_with_children[ $top_item->ID ] ) ) {
 						$menu[ $i ]['children'] = $this->get_nav_menu_item_children( $top_item->ID, $menu_items, false );
 					} else {
@@ -205,6 +217,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					}
 
 					$i++;
+
 				endforeach;
 
 				break;
@@ -235,7 +248,9 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 					$nav_menu_item_list[] = $this->format_menu_item( $nav_menu_item, true, $nav_menu_items );
 
 					if ( $depth ) {
+
 						if ( $children = $this->get_nav_menu_item_children( $nav_menu_item->ID, $nav_menu_items ) ) {
+
 							$nav_menu_item_list = array_merge( $nav_menu_item_list, $children );
 						}
 					}
@@ -280,6 +295,7 @@ if ( ! class_exists( 'WP_JSON_Menus' ) ) :
 			);
 
 			if ( $children === true && ! empty( $menu ) ) {
+
 				$menu_item['children'] = $this->get_nav_menu_item_children( $item['ID'], $menu );
 			}
 
