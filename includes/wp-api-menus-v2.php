@@ -280,13 +280,14 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 			$cache     = array();
 
 			foreach ( $rev_items as $item ) :
-
+        $post_id = url_to_postid( $item->url );
 				$formatted = array(
 					'ID'          => abs( $item->ID ),
 					'order'       => (int) $item->menu_order,
 					'parent'      => abs( $item->menu_item_parent ),
 					'title'       => $item->title,
 					'url'         => $item->url,
+          'thumbnail'   => has_post_thumbnail( $post_id ) ? get_the_post_thumbnail_url( $post_id ) : '',
 					'attr'        => $item->attr_title,
 					'target'      => $item->target,
 					'classes'     => implode( ' ', $item->classes ),
