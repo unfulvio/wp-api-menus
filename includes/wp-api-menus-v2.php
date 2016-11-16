@@ -280,7 +280,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 			$cache     = array();
 
 			foreach ( $rev_items as $item ) :
-        $post_id = url_to_postid( $item->url );
+
+                $post_id = url_to_postid( $item->url );
 				$formatted = array(
 					'ID'          => abs( $item->ID ),
 					'order'       => (int) $item->menu_order,
