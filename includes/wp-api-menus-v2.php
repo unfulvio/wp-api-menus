@@ -369,14 +369,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-			
-			if($item['type'] == 'taxonomy'){
-                $slug = get_term( $item['object_id'] )->slug;
-            }
-            else {
-                $slug = get_post( $item['object_id'] )->post_name;
-            }
-
+						
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
                 'order'       => (int) $item['menu_order'],
@@ -390,7 +383,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'description' => $item['description'],
                 'object_id'   => abs( $item['object_id'] ),
                 'object'      => $item['object'],
-                'object_slug' => $slug,
+                'object_slug' => get_object_slug($item),
                 'type'        => $item['type'],
                 'type_label'  => $item['type_label'],
             );
@@ -401,7 +394,19 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             return apply_filters( 'rest_menus_format_menu_item', $menu_item );
         }
-
+	
+		private function get_object_slug($item){
+			$slug = '';
+			
+			if($item['type'] == 'taxonomy'){
+                $slug = get_term( $item['object_id'] )->slug;
+            }
+            else {
+                $slug = get_post( $item['object_id'] )->post_name;
+            }
+			
+			return $slug;
+		}
 
     }
 
