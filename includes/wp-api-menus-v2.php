@@ -371,21 +371,22 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             $item = (array) $menu_item;
 
             $menu_item = array(
-                'id'          => abs( $item['ID'] ),
-                'order'       => (int) $item['menu_order'],
-                'parent'      => abs( $item['menu_item_parent'] ),
-                'title'       => $item['title'],
-                'url'         => $item['url'],
-                'attr'        => $item['attr_title'],
-                'target'      => $item['target'],
-                'classes'     => implode( ' ', $item['classes'] ),
-                'xfn'         => $item['xfn'],
-                'description' => $item['description'],
-                'object_id'   => abs( $item['object_id'] ),
-                'object'      => $item['object'],
-                'object_slug' => get_post( $item['object_id'] )->post_name,
-                'type'        => $item['type'],
-                'type_label'  => $item['type_label'],
+                'id'          	=> abs( $item['ID'] ),
+                'order'       	=> (int) $item['menu_order'],
+                'parent'      	=> abs( $item['menu_item_parent'] ),
+                'title'       	=> $item['title'],
+                'url'         	=> $item['url'],
+                'attr'        	=> $item['attr_title'],
+                'target'      	=> $item['target'],
+                'classes'     	=> implode( ' ', $item['classes'] ),
+                'xfn'         	=> $item['xfn'],
+                'description' 	=> $item['description'],
+                'object_id'   	=> abs( $item['object_id'] ),
+                'object'      	=> $item['object'],
+                'object_slug' 	=> get_post( $item['object_id'] )->post_name,
+				'object_status' => get_post( $item['object_id'] )->post_status,
+                'type'        	=> $item['type'],
+                'type_label'  	=> $item['type_label'],
             );
 
             if ( $children === true && ! empty( $menu ) ) {
