@@ -369,7 +369,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-						
+
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
                 'order'       => (int) $item['menu_order'],
@@ -383,7 +383,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'description' => $item['description'],
                 'object_id'   => abs( $item['object_id'] ),
                 'object'      => $item['object'],
-                'object_slug' => get_object_slug($item),
+                'object_slug' => $this->get_object_slug( $item ),
                 'type'        => $item['type'],
                 'type_label'  => $item['type_label'],
             );
@@ -394,8 +394,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             return apply_filters( 'rest_menus_format_menu_item', $menu_item );
         }
-	
-		private function get_object_slug($item){
+
+        private function get_object_slug($item){
 			$slug = '';
 			
 			if($item['type'] == 'taxonomy'){
