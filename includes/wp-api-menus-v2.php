@@ -129,7 +129,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @return array Menu data
          */
         public function get_menu( $request ) {
-
             $id             = (int) $request['id'];
             $rest_url       = get_rest_url() . self::get_api_namespace() . '/menus/';
             $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
@@ -158,7 +157,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 $rest_menu['meta']['links']['self']       = $rest_url . $id;
 
             endif;
-
             return apply_filters( 'rest_menus_format_menu', $rest_menu );
         }
 
@@ -303,7 +301,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 					$formatted['children'] = array_reverse( $cache[ $item->ID ] );
 				}
 
-            	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
+              	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
 
 				if ( $item->menu_item_parent != 0 ) {
 
@@ -369,7 +367,19 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-
+            $object_slug=null;
+            switch($item['type']){
+                case 'post_type_archive': //archive.
+                    $post_type_data = get_post_type_object( $item['object'] );
+                    $object_slug = $post_type_data->rewrite['slug'];
+                    break;
+                case 'taxonomy'://taxonomy term.
+                    $term = get_term_by( 'id', $item['object_id'], $item['object']);
+                    $object_slug = $term->slug;
+                case 'post_type':
+                    $object_slug = get_post( $item['object_id'] )->post_name;
+                    break;
+            }
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
                 'order'       => (int) $item['menu_order'],
@@ -383,7 +393,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'description' => $item['description'],
                 'object_id'   => abs( $item['object_id'] ),
                 'object'      => $item['object'],
-                'object_slug' => get_post( $item['object_id'] )->post_name,
+                'object_slug' => $object_slug,
                 'type'        => $item['type'],
                 'type_label'  => $item['type_label'],
             );
@@ -400,3 +410,4 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
 
 endif;
+
