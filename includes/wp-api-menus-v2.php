@@ -55,7 +55,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             register_rest_route( self::get_plugin_namespace(), '/menus', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-	                'callback' => array( $this, 'get_menus' ),
+                    'callback' => array( $this, 'get_menus' ),
                     'permission_callback' => '__return_true',
                 )
             ) );
