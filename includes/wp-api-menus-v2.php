@@ -55,7 +55,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             register_rest_route( self::get_plugin_namespace(), '/menus', array(
                 array(
                     'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menus' ),
+	                'callback' => array( $this, 'get_menus' ),
+	                'permission_callback' => '__return_true',
                 )
             ) );
 
@@ -63,6 +64,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu' ),
+	                'permission_callback' => '__return_true',
                     'args'     => array(
                         'context' => array(
                         'default' => 'view',
@@ -75,6 +77,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_locations' ),
+	                'permission_callback' => '__return_true',
                 )
             ) );
 
@@ -82,6 +85,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_location' ),
+	                'permission_callback' => '__return_true',
                 )
             ) );
         }
