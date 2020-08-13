@@ -1,4 +1,7 @@
-#### 1.3.1 (03 Oct 2016)
+#### 1.3.2 (12 August 2020)
+ * Fix (V2): Fix V2 register_rest_route compability issue with WP 5.5. (Missing permission_callback callback)
+
+ #### 1.3.1 (03 Oct 2016)
  * Tweak: The `object_slug` property is now available to get the slug for relative URLs - props @Fahrradflucht
 
 #### 1.3.0 (25 Feb 2016)
