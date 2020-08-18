@@ -59,7 +59,7 @@ Nothing to show really, this plugin has no settings or frontend, it just extends
 == Changelog ==
 
 = 1.3.2 =
-* Fix (V2): Fix V2 register_rest_route compatibility issue with WP 5.5. (Missing permission_callback arg) - props @thefrosty
+* Fix: Address V2 register_rest_route compatibility issue with WP 5.5 (missing permission_callback arg) - props @thefrosty
 
 = 1.3.1 =
 * Tweak: The `object_slug` property is now available to get the slug for relative URLs - props @Fahrradflucht
