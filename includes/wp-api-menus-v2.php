@@ -388,6 +388,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'object_id'   => abs( $item['object_id'] ),
                 'object'      => $item['object'],
                 'object_slug' => get_post( $item['object_id'] )->post_name,
+                'object_path' => str_replace(get_site_url(), '', $item['url']),
                 'type'        => $item['type'],
                 'type_label'  => $item['type_label'],
             );
