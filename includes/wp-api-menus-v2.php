@@ -298,11 +298,17 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 					'description' => $item->description,
 					'object_id'   => abs( $item->object_id ),
 					'object'      => $item->object,
+					'object_slug' => array(),
 					'type'        => $item->type,
 					'type_label'  => $item->type_label,
 					'children'    => array(),
 				);
 
+                if ( $formatted['object'] == 'category' ) {
+
+                    $formatted['object_slug'] = get_category($item->object_id)->slug;
+                }
+			
 				if ( array_key_exists( $item->ID , $cache ) ) {
 					$formatted['children'] = array_reverse( $cache[ $item->ID ] );
 				}
