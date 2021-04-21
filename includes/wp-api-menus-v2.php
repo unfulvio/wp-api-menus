@@ -115,7 +115,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @since  1.2.0
          * @return array All registered menus
          */
-        public static function get_menus($request) {
+        public static function get_menus($request =false) {
+            if(!$request)
+                return [];
+                
             $params = $request->get_params();
             
             $query_args = [];

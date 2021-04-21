@@ -12,6 +12,7 @@
 
 - `/menus` list of every registered menu.
 - `/menus/<id>` data for a specific menu.
+- `/menus?include=<id>,<id2>,<id3>` data for a set of menus
 - `/menu-locations` list of all registered theme locations.
 - `/menu-locations/<location>` data for menu in specified menu in theme location. 
 
