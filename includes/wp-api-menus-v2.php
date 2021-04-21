@@ -128,14 +128,14 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
             $wp_menus = wp_get_nav_menus($query_args);
 
-            // check if we should also include the actual menu; default to true
-            $include_items= (isset($params['include_menu_items']) && ((bool)$params['include_menu_items'] == false)) ? false : true;
+            // check if we should also include the actual menu; default to false
+            $include_items= (isset($params['include_menu_items']) && ($params['include_menu_items'] == "true")) ? true : false;
             
             $i = 0;
             $rest_menus = array();
             foreach ( $wp_menus as $wp_menu ) :
 
-                $rest_menus[ $i ] = (new WP_REST_Menus)->get_menu(['id'=>$wp_menu->term_id],$include_items);
+                $rest_menus[ $i ] = array_merge((array)$wp_menu,(new WP_REST_Menus)->get_menu(['id'=>$wp_menu->term_id],$include_items));
                 $i ++;
             endforeach;
 
@@ -154,8 +154,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             $id             = (int) $request['id'];
             $rest_url       = get_rest_url() . self::get_api_namespace() . '/menus/';
-            $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
-            $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+            $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();            
 
             $rest_menu = array();
 
@@ -170,6 +169,8 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
 
                 if($include_items){
+                    $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+
                     $rest_menu_items = array();
                     foreach ( $wp_menu_items as $item_object ) {
                     
