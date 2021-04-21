@@ -17,13 +17,18 @@
 
 Currently, the `menu-locations/<location>` route for individual menus will return a tree with full menu hierarchy, with correct menu item order and listing children for each menu item. The `menus/<id>` route will output menu details and a flat array of menu items. Item order or if each item has a parent will be indicated in each item attributes, but this route won't output items as a tree.
  
-You can alter the data arrangement of each individual menu items and children using the filter hook `json_menus_format_menu_item`.
+You can alter the V1 data arrangement of each individual menu items and children using the filter hook `json_menus_format_menu_item`.
 
 #### WP API V2
 
 In V1 of the REST API the routes are located by default at `wp-json/menus/` etc.
 
 In V2 the routes by default are at `wp-json/wp-api-menus/v2/` (e.g. `wp-json/wp-api-menus/v2/menus/`, etc.) since V2 encourages prefixing and version namespacing. 
+
+You can alter the V2 data arrangement of the REST response using the filter hooks
+1. `rest_menus_format_menus` to alter the list of menu items returned (e.g from `wp-json/wp-api-menus/v2/menus/`)
+2. `rest_menus_format_menu` to alter a single menu returned (e.g `wp-json/wp-api-menus/v2/menus/<id>`)
+3. `rest_menus_format_menu_item` to alter the menu items returned (e.g `wp-json/wp-api-menus/v2/menus/<id>` `items` property)
 
 #### Contributing
 

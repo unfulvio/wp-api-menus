@@ -4,7 +4,7 @@
  * Plugin URI:  https://github.com/nekojira/wp-api-menus
  * Description: Extends WP API with WordPress menu routes.
  *
- * Version:     1.3.1
+ * Version:     1.3.2
  *
  * Author:      Fulvio Notarstefano
  * Author URI:  https://github.com/unfulvio
