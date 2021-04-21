@@ -11,8 +11,10 @@
 #### New routes available:
 
 - `/menus` list of every registered menu.
+    - Accepted parameters:
+        - `include_menu_items`: get the items assigned to each Menu. <i>Default: true</i>
+        - `include=<id>,<id2>,<id3>`: request a specific set of Menus
 - `/menus/<id>` data for a specific menu.
-- `/menus?include=<id>,<id2>,<id3>` data for a set of menus
 - `/menu-locations` list of all registered theme locations.
 - `/menu-locations/<location>` data for menu in specified menu in theme location. 
 

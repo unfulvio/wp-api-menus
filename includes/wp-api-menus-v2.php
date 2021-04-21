@@ -118,7 +118,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public static function get_menus($request =false) {
             if(!$request)
                 return [];
-                
+
             $params = $request->get_params();
             
             $query_args = [];
@@ -128,16 +128,14 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
             $wp_menus = wp_get_nav_menus($query_args);
 
-            // check if we should also include the actual menu
-            $include_items= false;
-            if(isset($params['include_menu_items']) && ((bool)$params['include_menu_items'] == true))
-                $include_items = true;
+            // check if we should also include the actual menu; default to true
+            $include_items= (isset($params['include_menu_items']) && ((bool)$params['include_menu_items'] == false)) ? false : true;
             
             $i = 0;
             $rest_menus = array();
             foreach ( $wp_menus as $wp_menu ) :
 
-                $rest_menus[ $i ] = $this->get_menu(['id'=>$wp_menu->term_id],$include_items);
+                $rest_menus[ $i ] = (new WP_REST_Menus)->get_menu(['id'=>$wp_menu->term_id],$include_items);
                 $i ++;
             endforeach;
 
@@ -398,8 +396,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-            $id = abs($item['ID']);
-            $icon = get_post_meta($id, 'menu-item-icon', true);
+            $id = (int)$item['ID'];
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
                 'order'       => (int) $item['menu_order'],
@@ -415,9 +412,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'object'      => $item['object'],
                 'object_slug' => get_post( $item['object_id'] )->post_name,
                 'type'        => $item['type'],
-                'type_label'  => $item['type_label'],
-                'icon'        => $icon,  
-
+                'type_label'  => $item['type_label']
             );
 
             if ( $children === true && ! empty( $menu ) ) {
