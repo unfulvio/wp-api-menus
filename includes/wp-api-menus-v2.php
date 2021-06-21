@@ -267,7 +267,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             $location   = $params['location'];
             $locations  = get_nav_menu_locations();
 
-            if ( ! isset( $locations[ $location ] ) ) {
+            if ( empty( $locations[ $location ] ) ) {
 	            return array();
             }
 
