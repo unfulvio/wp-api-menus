@@ -15,6 +15,7 @@ sftp-config.json
 /build
 /node_modules/
 /vendor/
+/wordpress/
 composer.lock
 
 ### Tests ###
