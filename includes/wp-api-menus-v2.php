@@ -84,7 +84,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @since  1.2.0
          * @return array All registered menus
          */
-        public static function get_menus() {
+        public function get_menus() {
 	        _wp_rest_menus_doing_it_wrong(__METHOD__);
             $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
             $wp_menus = wp_get_nav_menus();
@@ -212,7 +212,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @param  $request
          * @return array All registered menus locations
          */
-        public static function get_menu_locations( $request ) {
+        public function get_menu_locations( $request ) {
 	        _wp_rest_menus_doing_it_wrong(__METHOD__);
             $locations        = get_nav_menu_locations();
             $registered_menus = get_registered_nav_menus();
