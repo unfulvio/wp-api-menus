@@ -66,11 +66,13 @@ if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
 	 * Mark a function as "deprecated" using doing_it_wrong().
 	 *
 	 * @param string $function
+	 *
 	 * @access private
+	 * @since 1.4.0
 	 * @uses _doing_it_wrong()
 	 */
 	function _wp_rest_menus_doing_it_wrong( $function ) {
-		if ( ! is_wp_version_compatible( '5.9' ) ) {
+		if ( ! is_wp_version_compatible( '5.9' ) || _wp_rest_menus_allow_legacy_menus() ) {
 			return;
 		}
 
@@ -83,5 +85,25 @@ if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
 			),
 			'1.4.0'
 		);
+	}
+endif;
+
+if ( ! function_exists( '_wp_rest_menus_allow_legacy_menus' ) ) :
+	/**
+	 * Allow legacy menus "filter".
+	 *
+	 * @return bool
+	 * @since 1.4.0
+	 * @access private
+	 */
+	function _wp_rest_menus_allow_legacy_menus() {
+		/**
+		 * Allow legacy menus.
+		 *
+		 * @param bool $allow_legacy_menus
+		 *
+		 * @return bool
+		 */
+		return apply_filters( 'rest_menus_allow_legacy_menus', false ) === true;
 	}
 endif;
