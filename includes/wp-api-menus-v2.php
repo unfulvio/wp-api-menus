@@ -369,7 +369,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-			$object_post = get_post( $item['object_id'] );
+                $object_post = get_post( $item['object_id'] );
 
 
             $menu_item = array(
