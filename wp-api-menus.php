@@ -81,7 +81,7 @@ if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
 			sprintf(
 			/* translators: 1: The REST API route namespace, 2: The plugin version. */
 				__( 'All custom menu routes under %1$s are deprecated in WordPress >= 5.9. Please use WordPres cores menu route(s).' ),
-				'<code>' . self::get_plugin_namespace() . '</code>'
+				'<code>' . WP_REST_Menus::get_plugin_namespace() . '</code>'
 			),
 			'1.4.0'
 		);
