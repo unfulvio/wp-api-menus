@@ -133,7 +133,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @return array Menu data
          */
         public function get_menu( $request ) {
-
             $id             = (int) $request['id'];
             $rest_url       = get_rest_url() . self::get_api_namespace() . '/menus/';
             $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
@@ -162,7 +161,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 $rest_menu['meta']['links']['self']       = $rest_url . $id;
 
             endif;
-
             return apply_filters( 'rest_menus_format_menu', $rest_menu );
         }
 
@@ -307,7 +305,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 					$formatted['children'] = array_reverse( $cache[ $item->ID ] );
 				}
 
-            	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
+              	$formatted = apply_filters( 'rest_menus_format_menu_item', $formatted );
 
 				if ( $item->menu_item_parent != 0 ) {
 
@@ -371,8 +369,37 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @return array	a formatted menu item for REST
          */
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
-
             $item = (array) $menu_item;
+            $object_slug=null;
+            $rest_path = '';
+            switch($item['type']){
+                case 'post_type_archive': //archive.
+                    $post_type_data = get_post_type_object( $item['object'] );
+                    $object = empty($post_type_data->rest_base) ? $item['object'] : $post_type_data->rest_base;
+                    $object_slug = $post_type_data->rewrite['slug'];
+
+                    $rest_path = rest_url( '/wp/v2/'.$object.'/');
+                    break;
+                case 'taxonomy'://taxonomy term.
+                    $term = get_term_by( 'id', $item['object_id'], $item['object']);
+                    $object_slug = $term->slug;
+                    $taxonomy = get_taxonomy( $item['object']);
+                    $object =  ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
+                    
+                    $rest_path = rest_url( '/wp/v2/'.$object.'/'.$item['object_id']);
+                    break;
+                case 'post_type':
+                    $post_type_data = get_post_type_object( $item['object'] );
+                    $object = empty($post_type_data->rest_base) ? $item['object'] : $post_type_data->rest_base;
+                    $object_slug = get_post( $item['object_id'] )->post_name;
+
+                    $rest_path = rest_url( '/wp/v2/'.$object.'/'.$item['object_id']);
+                    break;
+                default: //try with the object and id.
+                    $rest_path = rest_url( '/wp/v2/'.$item['object'].'/'.$item['object_id']);
+                    break;
+            }
+            //get_rest_url( int $blog_id = null, string $path = '/', string $scheme = 'rest' )
 
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
@@ -387,9 +414,10 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'description' => $item['description'],
                 'object_id'   => abs( $item['object_id'] ),
                 'object'      => $item['object'],
-                'object_slug' => get_post( $item['object_id'] )->post_name,
+                'object_slug' => $object_slug,
                 'type'        => $item['type'],
                 'type_label'  => $item['type_label'],
+                '_links'      => array('self'=>$rest_path)
             );
 
             if ( $children === true && ! empty( $menu ) ) {
