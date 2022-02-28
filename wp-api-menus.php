@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/unfulvio/wp-api-menus
  * Description: Extends WP API with WordPress menu routes.
  * Version: 1.4.0
- * Requires at least: 5.9
+ * Requires at least: 5.8
  * Tested up to: 5.9.1
  * Requires PHP: 5.6
  * Author: Fulvio Notarstefano
