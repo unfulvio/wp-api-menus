@@ -72,7 +72,10 @@ if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
 	 * @uses _doing_it_wrong()
 	 */
 	function _wp_rest_menus_doing_it_wrong( $function ) {
-		if ( ! is_wp_version_compatible( '5.9' ) || _wp_rest_menus_allow_legacy_menus() ) {
+		if (
+			_wp_rest_menus_allow_legacy_menus() ||
+			is_wp_version_compatible( '5.9' ) && _wp_rest_menus_allow_legacy_menus()
+		) {
 			return;
 		}
 
