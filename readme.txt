@@ -1,10 +1,10 @@
 === WP API Menus ===
 Contributors: nekojira, austyfrosty
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P64V9NTEYFKDL
-Tags: wp-api, wp-rest-api, json-rest-api, json, menus, rest, api, menu-routes
-Requires at least: 3.6.0
-Tested up to: 5.5.0
-Stable tag: 1.3.2
+Tags: deprecated, wp-api, wp-rest-api, json-rest-api, json, menus, rest, api, menu-routes
+Requires at least: 5.8.0
+Tested up to: 5.9.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,12 +33,9 @@ In V2 the routes by default are at `wp-json/wp-api-menus/v2/` (e.g. `wp-json/wp-
 
 == Installation ==
 
-This plugin requires having [WP API](https://wordpress.org/plugins/json-rest-api/) installed and activated or it won't be of any use.
-
 Install the plugin as you would with any WordPress plugin in your `wp-content/plugins/` directory or equivalent.
 
 Once installed, activate WP API Menus from WordPress plugins dashboard page and you're ready to go, WP API will respond to new routes and endpoints to your registered menus.
-
 
 == Frequently Asked Questions ==
 
@@ -57,6 +54,10 @@ However, menu data organization in json is a bit arbitrary and subjective, and t
 Nothing to show really, this plugin has no settings or frontend, it just extends WP API with new routes. It's up to you how to use them :)
 
 == Changelog ==
+
+= 1.4.0 =
+* Mark menus as deprecated via `doing_it_wrong()` in favor of WordPress' core menus endpoints in WP >= 5.9 - props @thefrosty
+* Allow continued use of legacy menus via filter: `rest_menus_allow_legacy_menus`.
 
 = 1.3.2 =
 * Fix: Address V2 register_rest_route compatibility issue with WP 5.5 (missing permission_callback arg) - props @thefrosty
@@ -103,6 +104,9 @@ Nothing to show really, this plugin has no settings or frontend, it just extends
 
 == Upgrade Notice ==
 
-= 1.2.1 =
+= 1.4.0 =
+All WP API Menu routes are now marked as "deprecated", you should use WordPress' core menu endpoints. To continue 
+using legacy menus, you can filter `rest_menus_allow_legacy_menus` to return true.
 
+= 1.2.1 =
 API V2 only: mind lowercase `id` instead of uppercase `ID` in API responses, to match the standard for `id` used across WP REST API.
