@@ -66,12 +66,14 @@ if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
 	 * Mark a function as "deprecated" using doing_it_wrong().
 	 *
 	 * @param string $function
+	 * @param string $route
+	 * @param string $replacement
 	 *
 	 * @access private
 	 * @since 1.4.0
 	 * @uses _doing_it_wrong()
 	 */
-	function _wp_rest_menus_doing_it_wrong( $function ) {
+	function _wp_rest_menus_doing_it_wrong( $function, $route, $replacement ) {
 		if (
 			_wp_rest_menus_allow_legacy_menus() ||
 			is_wp_version_compatible( '5.9' ) && _wp_rest_menus_allow_legacy_menus()
@@ -83,8 +85,9 @@ if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
 			$function,
 			sprintf(
 			/* translators: 1: The REST API route namespace, 2: The plugin version. */
-				__( 'All custom menu routes under %1$s are deprecated in WordPress >= 5.9. Please use WordPres cores menu route(s).' ),
-				'<code>' . WP_REST_Menus::get_plugin_namespace() . '</code>'
+				__( 'The REST API Menu route %1$s is "deprecated". Please use WordPres cores menu route replacement found in WP >= 5.9: %2$s' ),
+				sprintf('<code>%1$s%2$s</code>', WP_REST_Menus::get_plugin_namespace(), $route),
+				'<code>' . $replacement . '</code>'
 			),
 			'1.4.0'
 		);
