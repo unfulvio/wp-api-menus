@@ -1,14 +1,14 @@
 <?php
 /**
  * Plugin Name: WP REST API Menus
- * Plugin URI:  https://github.com/nekojira/wp-api-menus
+ * Plugin URI: https://github.com/unfulvio/wp-api-menus
  * Description: Extends WP API with WordPress menu routes.
- *
- * Version:     1.3.2
- *
- * Author:      Fulvio Notarstefano
- * Author URI:  https://github.com/unfulvio
- *
+ * Version: 1.4.0
+ * Requires at least: 5.9
+ * Tested up to: 5.9.1
+ * Requires PHP: 5.6
+ * Author: Fulvio Notarstefano
+ * Author URI: https://github.com/unfulvio
  * Text Domain: wp-api-menus
  *
  * @package WP_API_Menus
@@ -39,8 +39,7 @@ include_once 'includes/wp-api-menus-v1.php';
 // WP API v2.
 include_once 'includes/wp-api-menus-v2.php';
 
-if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
-
+if ( ! function_exists( 'wp_rest_menus_init' ) ) :
 	/**
 	 * Init JSON REST API Menu routes.
 	 *
@@ -48,9 +47,11 @@ if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 	 */
 	function wp_rest_menus_init() {
 
-        if ( ! defined( 'JSON_API_VERSION' ) && ! in_array( 'json-rest-api/plugin.php', get_option( 'active_plugins' ) ) ) {
+		if ( ! defined( 'JSON_API_VERSION' ) &&
+		     ! in_array( 'json-rest-api/plugin.php', get_option( 'active_plugins', array() ) )
+		) {
 			$class = new WP_REST_Menus();
-			 add_filter( 'rest_api_init', array( $class, 'register_routes' ) );
+			add_filter( 'rest_api_init', array( $class, 'register_routes' ) );
 		} else {
 			$class = new WP_JSON_Menus();
 			add_filter( 'json_endpoints', array( $class, 'register_routes' ) );
@@ -58,5 +59,29 @@ if ( ! function_exists ( 'wp_rest_menus_init' ) ) :
 	}
 
 	add_action( 'init', 'wp_rest_menus_init' );
+endif;
 
+if ( ! function_exists( '_wp_rest_menus_doing_it_wrong' ) ) :
+	/**
+	 * Mark a function as "deprecated" using doing_it_wrong().
+	 *
+	 * @param string $function
+	 * @access private
+	 * @uses _doing_it_wrong()
+	 */
+	function _wp_rest_menus_doing_it_wrong( $function ) {
+		if ( ! is_wp_version_compatible( '5.9' ) ) {
+			return;
+		}
+
+		_doing_it_wrong(
+			$function,
+			sprintf(
+			/* translators: 1: The REST API route namespace, 2: The plugin version. */
+				__( 'All custom menu routes under %1$s are deprecated in WordPress >= 5.9. Please use WordPres cores menu route(s).' ),
+				'<code>' . self::get_plugin_namespace() . '</code>'
+			),
+			'1.4.0'
+		);
+	}
 endif;
