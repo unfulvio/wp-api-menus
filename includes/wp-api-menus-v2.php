@@ -56,6 +56,24 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 array(
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menus' ),
+                    'args'     => array(
+                        'include' => array(
+                            'required' => false,
+                            'validate_callback' => function($val){
+                                $list = explode(',',$val);
+                                if(!is_array( $list))
+                                    return new WP_Error( 'rest_invalid_param', 'include should be an array of menu ID numbers', array( 'status' => 500 ) );
+                                foreach($list as $id){
+                                    if(!is_nav_menu($id))
+                                        return new WP_Error( 'rest_invalid_param', $id.' is not a nav menu', array( 'status' => 500 ) );
+                                }
+                                return true;
+                            }
+                        ),
+                        'include_menu_items' => array(
+                            'required' => false
+                        ),
+                    ),
                     'permission_callback' => '__return_true',
                 )
             ) );
@@ -97,27 +115,27 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @since  1.2.0
          * @return array All registered menus
          */
-        public static function get_menus() {
+        public static function get_menus($request =false) {
+            if(!$request)
+                return [];
+
+            $params = $request->get_params();
+            
+            $query_args = [];
+            if(isset($params['include']))
+                $query_args['include'] = explode(',',$params['include']);
 
             $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
-            $wp_menus = wp_get_nav_menus();
+            $wp_menus = wp_get_nav_menus($query_args);
 
+            // check if we should also include the actual menu; default to false
+            $include_items= (isset($params['include_menu_items']) && ($params['include_menu_items'] == "true")) ? true : false;
+            
             $i = 0;
             $rest_menus = array();
             foreach ( $wp_menus as $wp_menu ) :
 
-                $menu = (array) $wp_menu;
-
-                $rest_menus[ $i ]                = $menu;
-                $rest_menus[ $i ]['ID']          = $menu['term_id'];
-                $rest_menus[ $i ]['name']        = $menu['name'];
-                $rest_menus[ $i ]['slug']        = $menu['slug'];
-                $rest_menus[ $i ]['description'] = $menu['description'];
-                $rest_menus[ $i ]['count']       = $menu['count'];
-
-                $rest_menus[ $i ]['meta']['links']['collection'] = $rest_url;
-                $rest_menus[ $i ]['meta']['links']['self']       = $rest_url . $menu['term_id'];
-
+                $rest_menus[ $i ] = array_merge((array)$wp_menu,(new WP_REST_Menus)->get_menu(['id'=>$wp_menu->term_id],$include_items));
                 $i ++;
             endforeach;
 
@@ -132,12 +150,11 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @param  $request
          * @return array Menu data
          */
-        public function get_menu( $request ) {
+        public function get_menu( $request,$include_items=true ) {
 
             $id             = (int) $request['id'];
             $rest_url       = get_rest_url() . self::get_api_namespace() . '/menus/';
-            $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
-            $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+            $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();            
 
             $rest_menu = array();
 
@@ -150,14 +167,23 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 $rest_menu['description'] = $menu['description'];
                 $rest_menu['count']       = abs( $menu['count'] );
 
-                $rest_menu_items = array();
-                foreach ( $wp_menu_items as $item_object ) {
-	                $rest_menu_items[] = $this->format_menu_item( $item_object );
+
+                if($include_items){
+                    $wp_menu_items  = $id ? wp_get_nav_menu_items( $id ) : array();
+
+                    $rest_menu_items = array();
+                    foreach ( $wp_menu_items as $item_object ) {
+                    
+	                    $rest_menu_items[] = $this->format_menu_item( $item_object );
+                    }
+
+                
+                    $rest_menu_items = $this->nested_menu_items($rest_menu_items, 0);
+
+                    $rest_menu['items']                       = $rest_menu_items;
                 }
 
-                $rest_menu_items = $this->nested_menu_items($rest_menu_items, 0);
-
-                $rest_menu['items']                       = $rest_menu_items;
+                // wp_die(print_r($rest_menu));
                 $rest_menu['meta']['links']['collection'] = $rest_url;
                 $rest_menu['meta']['links']['self']       = $rest_url . $id;
 
@@ -273,7 +299,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 
             $wp_menu = wp_get_nav_menu_object( $locations[ $location ] );
             $menu_items = wp_get_nav_menu_items( $wp_menu->term_id );
-
 			/**
 			 * wp_get_nav_menu_items() outputs a list that's already sequenced correctly.
 			 * So the easiest thing to do is to reverse the list and then build our tree
@@ -284,7 +309,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 			$cache     = array();
 
 			foreach ( $rev_items as $item ) :
-
 				$formatted = array(
 					'ID'          => abs( $item->ID ),
 					'order'       => (int) $item->menu_order,
@@ -299,7 +323,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 					'object_id'   => abs( $item->object_id ),
 					'object'      => $item->object,
 					'type'        => $item->type,
-					'type_label'  => $item->type_label,
+                    'type_label'  => $item->type_label,
 					'children'    => array(),
 				);
 
@@ -373,7 +397,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
         public function format_menu_item( $menu_item, $children = false, $menu = array() ) {
 
             $item = (array) $menu_item;
-
+            $id = (int)$item['ID'];
             $menu_item = array(
                 'id'          => abs( $item['ID'] ),
                 'order'       => (int) $item['menu_order'],
@@ -389,7 +413,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                 'object'      => $item['object'],
                 'object_slug' => get_post( $item['object_id'] )->post_name,
                 'type'        => $item['type'],
-                'type_label'  => $item['type_label'],
+                'type_label'  => $item['type_label']
             );
 
             if ( $children === true && ! empty( $menu ) ) {
