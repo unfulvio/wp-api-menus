@@ -22,18 +22,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
      */
     class WP_REST_Menus {
 
-
-	    /**
-	     * Get WP API namespace.
-	     *
-	     * @since 1.2.0
-	     * @return string
-	     */
-        public static function get_api_namespace() {
-            return 'wp/v2';
-        }
-
-
 	    /**
 	     * Get WP API Menus namespace.
 	     *
@@ -57,7 +45,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menus' ),
                     'permission_callback' => '__return_true',
-	                'schema' => array( 'deprecated' => true ),
                 )
             ) );
 
@@ -66,7 +53,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu' ),
                     'permission_callback' => '__return_true',
-                    'schema' => array( 'deprecated' => true ),
                     'args' => array(
 	                    'context' => array(
 		                    'default' => 'view',
@@ -80,7 +66,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_locations' ),
                     'permission_callback' => '__return_true',
-                    'schema' => array( 'deprecated' => true ),
                 )
             ) );
 
@@ -89,11 +74,9 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
                     'methods'  => WP_REST_Server::READABLE,
                     'callback' => array( $this, 'get_menu_location' ),
                     'permission_callback' => '__return_true',
-                    'schema' => array( 'deprecated' => true ),
                 )
             ) );
         }
-
 
         /**
          * Get menus.
