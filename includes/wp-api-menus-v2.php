@@ -22,17 +22,16 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
      */
     class WP_REST_Menus {
 
-
 	    /**
-	     * Get WP API namespace.
-	     *
-	     * @since 1.2.0
-	     * @return string
+	     * Mapped route replacements.
+	     * @var string[] $replacements
 	     */
-        public static function get_api_namespace() {
-            return 'wp/v2';
-        }
-
+		private $replacements = array(
+			'/menus' => '/wp/v2/menus',
+			'/menus/(?P<id>\d+)' => '/wp/v2/menus/(?P<id>[\d]+)',
+			'/menu-locations' => '/wp/v2/menu-locations',
+			'/menu-locations/(?P<location>[a-zA-Z0-9_-]+)' => '/wp/v2/menu-locations/(?P<location>[\w-]+)',
+		);
 
 	    /**
 	     * Get WP API Menus namespace.
@@ -44,7 +43,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
 		    return 'wp-api-menus/v2';
 	    }
 
-
         /**
          * Register menu routes for WP API v2.
          *
@@ -52,44 +50,43 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          */
         public function register_routes() {
 
-            register_rest_route( self::get_plugin_namespace(), '/menus', array(
-                array(
-                    'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menus' ),
-                    'permission_callback' => '__return_true',
-                )
-            ) );
+	        $this->register_rest_route( '/menus', array(
+		        array(
+			        'methods'             => WP_REST_Server::READABLE,
+			        'callback'            => array( $this, 'get_menus' ),
+			        'permission_callback' => '__return_true',
+		        )
+	        ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menus/(?P<id>\d+)', array(
-                array(
-                    'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menu' ),
-                    'permission_callback' => '__return_true',
-                    'args'     => array(
-                        'context' => array(
-                        'default' => 'view',
-                        ),
-                    ),
-                )
-            ) );
+	        $this->register_rest_route( '/menus/(?P<id>\d+)', array(
+		        array(
+			        'methods'             => WP_REST_Server::READABLE,
+			        'callback'            => array( $this, 'get_menu' ),
+			        'permission_callback' => '__return_true',
+			        'args'                => array(
+				        'context' => array(
+					        'default' => 'view',
+				        ),
+			        ),
+		        )
+	        ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menu-locations', array(
-                array(
-                    'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menu_locations' ),
-                    'permission_callback' => '__return_true',
-                )
-            ) );
+	        $this->register_rest_route( '/menu-locations', array(
+		        array(
+			        'methods'             => WP_REST_Server::READABLE,
+			        'callback'            => array( $this, 'get_menu_locations' ),
+			        'permission_callback' => '__return_true',
+		        )
+	        ) );
 
-            register_rest_route( self::get_plugin_namespace(), '/menu-locations/(?P<location>[a-zA-Z0-9_-]+)', array(
-                array(
-                    'methods'  => WP_REST_Server::READABLE,
-                    'callback' => array( $this, 'get_menu_location' ),
-                    'permission_callback' => '__return_true',
-                )
-            ) );
+	        $this->register_rest_route( '/menu-locations/(?P<location>[a-zA-Z0-9_-]+)', array(
+		        array(
+			        'methods'             => WP_REST_Server::READABLE,
+			        'callback'            => array( $this, 'get_menu_location' ),
+			        'permission_callback' => '__return_true',
+		        )
+	        ) );
         }
-
 
         /**
          * Get menus.
@@ -97,8 +94,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @since  1.2.0
          * @return array All registered menus
          */
-        public static function get_menus() {
-
+        public function get_menus() {
             $rest_url = trailingslashit( get_rest_url() . self::get_plugin_namespace() . '/menus/' );
             $wp_menus = wp_get_nav_menus();
 
@@ -133,7 +129,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @return array Menu data
          */
         public function get_menu( $request ) {
-
             $id             = (int) $request['id'];
             $rest_url       = get_rest_url() . self::get_plugin_namespace() . '/menus/';
             $wp_menu_object = $id ? wp_get_nav_menu_object( $id ) : array();
@@ -225,8 +220,7 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @param  $request
          * @return array All registered menus locations
          */
-        public static function get_menu_locations( $request ) {
-
+        public function get_menu_locations( $request ) {
             $locations        = get_nav_menu_locations();
             $registered_menus = get_registered_nav_menus();
 	        $rest_url         = get_rest_url() . self::get_plugin_namespace() . '/menu-locations/';
@@ -262,7 +256,6 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
          * @return array The menu for the corresponding location
          */
         public function get_menu_location( $request ) {
-
             $params     = $request->get_params();
             $location   = $params['location'];
             $locations  = get_nav_menu_locations();
@@ -401,8 +394,17 @@ if ( ! class_exists( 'WP_REST_Menus' ) ) :
             return apply_filters( 'rest_menus_format_menu_item', $menu_item );
         }
 
-
+	    /**
+	     * Registers our REST API route.
+	     *
+	     * @param string $route     The base URL for route you are adding.
+	     * @param array  $args      Optional. Either an array of options for the endpoint, or an array of arrays for
+	     *                          multiple methods. Default empty array.
+	     */
+	    private function register_rest_route( $route, $args = array() ) {
+		    _wp_rest_menus_doing_it_wrong( __METHOD__, $route, $this->replacements[ $route ] );
+		    register_rest_route( self::get_plugin_namespace(), $route, $args );
+	    }
     }
-
 
 endif;

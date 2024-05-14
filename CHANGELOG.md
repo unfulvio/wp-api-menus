@@ -1,5 +1,12 @@
+#### 1.4.0 (28 February 2022)
+* Mark menus as deprecated via `doing_it_wrong()` in favor of WordPress' core menus endpoints in WP >= 5.9 - props @thefrosty
+* Allow continued use of legacy menus via filter: `rest_menus_allow_legacy_menus`:
+  ```php
+     add_filter( 'rest_menus_allow_legacy_menus', '__return_true' );
+  ``` 
+
 #### 1.3.2 (12 August 2020)
- * Fix (V2): Fix V2 register_rest_route compatibility issue with WP 5.5. (Missing permission_callback arg)
+* Fix (V2): Fix V2 register_rest_route compatibility issue with WP 5.5. (Missing permission_callback arg)
 
 #### 1.3.1 (03 Oct 2016)
  * Tweak: The `object_slug` property is now available to get the slug for relative URLs - props @Fahrradflucht
